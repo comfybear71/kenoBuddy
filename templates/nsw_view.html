@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Display</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+</head>
+
+<body class="bg-dark text-white">
+    <!--<div class="container">
+        <h2>ACT Data Table</h2>
+        <table class="table">
+            <tbody>
+                    Data rows will be inserted here dynamically 
+            </tbody>
+        </table>
+    </div>-->
+    <div id="gamesContainer" class="container mt-3">
+        <div id="mainContainer"></div>
+    </div>
+
+    <!-- First, include the full version of jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Then include other scripts that depend on jQuery -->
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Include your custom script here, ensuring it's after jQuery and other dependent libraries 
+    <script src="path/to/your/custom/script.js"></script>-->
+
+    <!-- Finally, include your custom script 
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>-->
+    <script>
+        jQuery(document).ready(function($) {
+            $.getJSON('/nsw', function(response) {
+                // Get the last 6 games (to exclude the very last one), then reverse and take the first 5
+                let gamesToShow = response.data.slice(-6).reverse().slice(1);
+            
+                gamesToShow.forEach(gameEntry => {
+                    // Define an array of category names to process
+                    const categories = ['filtered', 'taps', 'picks', 'grabs', 'plucker'];
+            
+                    // Create a container for the current game's data
+                    let gameContainer = document.createElement('div');
+                    gameContainer.className = 'game-data-container'; // Add a class for styling if needed
+            
+                    categories.forEach(category => {
+                        // Parse the data, only getting the last 5 entries of hits and numbers
+                        let hitsArray = parseToArray(gameEntry[`${category}_numbers`]);
+                        let numbersArray = parseToArray(gameEntry[category]);
+            
+                        let data = {
+                            gameNo: gameEntry.game_number,
+                            name: `${category.charAt(0).toUpperCase() + category.slice(1)} Data`,
+                            hits: hitsArray.join(", "),
+                            hitsCount: hitsArray.length,
+                            numbers: numbersArray.join(", "),
+                            possibleCombinations: gameEntry[`${category}_comb`],
+                            strikeRatePercent: ((hitsArray.length / numbersArray.length) * 100).toFixed(2)
+                        };
+            
+                        // Create the card for the current category and append it to the game container
+                        gameContainer.innerHTML += createCardContent(data);
+                    });
+            
+                    // Append the game container to a main container in your HTML
+                    document.getElementById('mainContainer').appendChild(gameContainer);
+                });
+            });
+        });
+
+
+        function parseToArray(str) {
+            if (!str) { // Checks for null, undefined, and empty string
+                return []; // Returns an empty array if the input is null-like
+            }
+            try {
+                return JSON.parse(str);
+            } catch (e) {
+                return str.split(',');
+            }
+        }
+
+        function processGameEntry(gameEntry, index) {
+            // Define an array of data types you want to process
+            const dataTypes = ['filtered', 'taps', 'picks', 'grabs', 'plucker'];
+            
+            // Loop through each data type and create a card for it
+            dataTypes.forEach(dataType => {
+                let data = {
+                    gameNo: gameEntry.game_number,
+                    name: dataType.charAt(0).toUpperCase() + dataType.slice(1), // Capitalize the first letter
+                    hits: parseToArray(gameEntry[dataType + '_numbers']).join(", "),
+                    hitsCount: parseToArray(gameEntry[dataType + '_numbers']).length,
+                    numbers: parseToArray(gameEntry[dataType]).join(", "),
+                    possibleCombinations: gameEntry[dataType + '_comb']
+                };
+        
+                // Calculate the strike rate percentage
+                data.strikeRatePercent = ((data.hitsCount / parseToArray(gameEntry[dataType]).length) * 100).toFixed(2);
+        
+                // Assuming you have a specific container for each type
+                document.getElementById(dataType + 'Container').innerHTML += createCardContent(data);
+            });
+        }
+
+        function createCardContent(data, index) {
+            let strikeRatePercent = ((data.hitsCount / 25) * 100).toFixed(2);
+            let greenBlocks = Math.ceil(data.hitsCount / 2);
+            let redBlocks = Math.ceil((25 - data.hitsCount) / 2);
+            let indicators = '🟩'.repeat(greenBlocks) + '🟥'.repeat(redBlocks);
+            let collapseId = "collapse" + data.name.replace(/\s+/g, '') + index; // Ensure a unique ID
+
+              // Determine the image based on data.hits
+                let imageTag = ''; // Default: no image
+                if (data.hitsCount >= 10) {
+                    imageTag = '<button class="btn btn-success btn-sm">Ten Spot</button>';
+                } else {
+                    switch (data.hitsCount) {
+                        case 6:
+                            imageTag = '<button class="btn btn-light btn-sm">Six Spot</button>';
+                            break;
+                        case 7:
+                            imageTag = '<button class="btn btn-warning btn-sm">Seven Spot</button>';
+                            break;
+                        case 8:
+                            imageTag = '<button class="btn btn-danger btn-sm">Eight Spot</button>';
+                            break;
+                        case 9:
+                            imageTag = '<button class="btn btn-info btn-sm">Nine Spot</button>';
+                            break;
+                        // No need for a case 10 since it's handled by the if statement
+                        // Add more cases if needed
+                    }
+                }
+        
+            return `
+                <div class="card card-margin bg-secondary text-white"">
+                    <div class="card-body">
+                        <h5 class="card-title">${data.name} for Game No. ${data.gameNo}</h5>
+                        <p class="card-text">
+                            Strike Rate: ${strikeRatePercent}% <br>
+                            ${indicators}
+                        </p>
+                        <button class="btn btn-custom-dark btn-sm" type="button" data-toggle="collapse" data-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+                            More Info
+                        </button>
+                        ${imageTag} <!-- This is where the image gets inserted based on data.hits -->
+                        <div class="collapse" id="${collapseId}">
+                            <div class="card card-body mt-2">
+                                Hits: ${data.hits} <br>
+                                Numbers: ${data.numbers} <br>
+                                Possible Combinations: ${data.possibleCombinations}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

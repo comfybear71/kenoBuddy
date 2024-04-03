@@ -1,0 +1,39 @@
+body {
+    background-color: #343a40; /* A dark gray - Bootstrap's .bg-dark color */
+    color: #ffffff; /* Bootstrap's .text-white color */
+}
+.game-data-container {
+    margin-bottom: 20px; /* Space between each game's set of cards */
+}
+.card-margin {
+    margin-bottom: 10px; /* Adjust the margin size as needed */
+}
+/* For the cards */
+.card {
+    background-color: #495057; /* A slightly lighter shade than the body for contrast */
+    color: #ffffff; /* Ensure text is white */
+}
+/* Custom dark button style */
+.btn-custom-dark {
+    border: solid 1px ;
+    background-color: #1c1c1e; /* Darker shade for button background */
+    border-color: #97d40a; /* Darker shade for button border */
+    color: #ffffff; /* White text color */
+    border-radius: 8px;
+
+}
+
+/* Change the hover and active state colors if needed */
+.btn-custom-dark:hover,
+.btn-custom-dark:focus,
+.btn-custom-dark:active {
+  /*  background-color: #1a70c6;  Slightly lighter shade for hover/active background */
+  /*  border-color: #9edd0b;  Slightly lighter shade for hover/active border */
+    color: #fff;
+}
+
+.btn-custom-dark.collapsed {
+    background-color: #333; /* Different shade for when the collapsible is closed */
+    border-color: #333;
+    /* Additional styles for when the collapsible is closed */
+}

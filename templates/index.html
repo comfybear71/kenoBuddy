@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="windows-1252" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<title>Keno Buddy</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/landscape.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/portrait.css') }}">
+	</head>
+    <body>
+        <div class="container">
+            <!-- HEADER-->
+            <div class="header">
+                <div class="center-wrapper">
+                    <div class="mini_title">
+                        <div class="mini_row" style="background-color: #c5202b; ">K</div>
+                        <div class="mini_row" style="background-color: #006bb5; ">E</div>
+                        <div class="mini_row" style="background-color: #00843d; ">N</div>
+                        <div class="mini_row" style="background-color: #f9a800; ">O</div>
+                        <div class="mini_row" style="background-color: #; "></div>
+                        <div class="mini_row" style="background-color: #b42996; ">B</div>
+                        <div class="mini_row" style="background-color: #f05000; ">U</div>
+                        <div class="mini_row" style="background-color: #8eaac0; ">D</div>
+                        <div class="mini_row" style="background-color: #8eaac0; ">D</div>
+                        <div class="mini_row" style="background-color: #523191; ">Y</div>
+                    </div>
+                </div>
+                <div class="slogan">"where luck meets S-T-R-A-T-E-G-Y"
+                    <br><small class="tilt">tilt landscape for more info!</small>
+                </div>
+                <div class="game_data_container">
+                    <h3 id="gameState">Results</h3>
+                    <h3 id="gameNumber">Game: N/A</h3>
+                    <h3 id="timer">Next: N/A</h3>
+                </div>
+                <div class="option_container">
+                    <div class="dropdown-container">
+                        <label for="jurisdiction">Select Jurisdiction:</label>
+                        <select id="jurisdiction">
+                            <option value="ACT">SA</option>
+                            <option value="ACT">NT</option>
+                            <option value="VIC">VIC</option>
+                            <option value="QLD">QLD</option>
+                            <option value="ACT">TAS</option>
+                            <option value="NSW">NSW</option>
+                            <option value="ACT" selected>ACT</option>
+                        </select>
+                    </div>
+                    <div class="dropdown-container">
+                        <label for="numOfGames">Number of games:</label>
+                        <select id="numOfGames">
+                            <option value="20">20</option>
+                            <option value="50" selected >50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- CAPTION BOX-->
+            <div class="caption">
+                <div class="caption1_container" >
+                    <div class="caption1" id="caption1">My Keno Buddy</div>
+                </div>
+            </div>
+            <!-- HAT TRICK NUMBERS -->
+            <div class="hat-trick">
+                <div id="hat-trick-content"></div>  
+            </div>
+            <!-- GAME BOARD -->
+            <div class="board">
+                <div class="board-container">
+                    <div class="heads">
+                            <div class="cell top-number" id="cell-1">1</div>
+                            <div class="cell top-number" id="cell-2">2</div>
+                            <div class="cell top-number" id="cell-3">3</div>
+                            <div class="cell top-number" id="cell-4">4</div>
+                            <div class="cell top-number" id="cell-5">5</div>
+                            <div class="cell top-number" id="cell-6">6</div>
+                            <div class="cell top-number" id="cell-7">7</div>
+                            <div class="cell top-number" id="cell-8">8</div>
+                            <div class="cell top-number" id="cell-9">9</div>
+                            <div class="cell top-number" id="cell-10">10</div>
+                            <div class="cell top-number" id="cell-11">11</div>
+                            <div class="cell top-number" id="cell-12">12</div>
+                            <div class="cell top-number" id="cell-13">13</div>
+                            <div class="cell top-number" id="cell-14">14</div>
+                            <div class="cell top-number" id="cell-15">15</div>
+                            <div class="cell top-number" id="cell-16">16</div>
+                            <div class="cell top-number" id="cell-17">17</div>
+                            <div class="cell top-number" id="cell-18">18</div>
+                            <div class="cell top-number" id="cell-19">19</div>
+                            <div class="cell top-number" id="cell-20">20</div>
+                            <div class="cell top-number" id="cell-21">21</div>
+                            <div class="cell top-number" id="cell-22">22</div>
+                            <div class="cell top-number" id="cell-23">23</div>
+                            <div class="cell top-number" id="cell-24">24</div>
+                            <div class="cell top-number" id="cell-25">25</div>
+                            <div class="cell top-number" id="cell-26">26</div>
+                            <div class="cell top-number" id="cell-27">27</div>
+                            <div class="cell top-number" id="cell-28">28</div>
+                            <div class="cell top-number" id="cell-29">29</div>
+                            <div class="cell top-number" id="cell-30">30</div>
+                            <div class="cell top-number" id="cell-31">31</div>
+                            <div class="cell top-number" id="cell-32">32</div>
+                            <div class="cell top-number" id="cell-33">33</div>
+                            <div class="cell top-number" id="cell-34">34</div>
+                            <div class="cell top-number" id="cell-35">35</div>
+                            <div class="cell top-number" id="cell-36">36</div>
+                            <div class="cell top-number" id="cell-37">37</div>
+                            <div class="cell top-number" id="cell-38">38</div>
+                            <div class="cell top-number" id="cell-39">39</div>
+                            <div class="cell top-number" id="cell-40">40</div>
+                    </div>
+                    <div class="tails">
+                            <div class="cell top-number" id="cell-41">41</div>
+                            <div class="cell top-number" id="cell-42">42</div>
+                            <div class="cell top-number" id="cell-43">43</div>
+                            <div class="cell top-number" id="cell-44">44</div>
+                            <div class="cell top-number" id="cell-45">45</div>
+                            <div class="cell top-number" id="cell-46">46</div>
+                            <div class="cell top-number" id="cell-47">47</div>
+                            <div class="cell top-number" id="cell-48">48</div>
+                            <div class="cell top-number" id="cell-49">49</div>
+                            <div class="cell top-number" id="cell-50">50</div>
+                            <div class="cell top-number" id="cell-51">51</div>
+                            <div class="cell top-number" id="cell-52">52</div>
+                            <div class="cell top-number" id="cell-53">53</div>
+                            <div class="cell top-number" id="cell-54">54</div>
+                            <div class="cell top-number" id="cell-55">55</div>
+                            <div class="cell top-number" id="cell-56">56</div>
+                            <div class="cell top-number" id="cell-57">57</div>
+                            <div class="cell top-number" id="cell-58">58</div>
+                            <div class="cell top-number" id="cell-59">59</div>
+                            <div class="cell top-number" id="cell-60">60</div>
+                            <div class="cell top-number" id="cell-61">61</div>
+                            <div class="cell top-number" id="cell-62">62</div>
+                            <div class="cell top-number" id="cell-63">63</div>
+                            <div class="cell top-number" id="cell-64">64</div>
+                            <div class="cell top-number" id="cell-65">65</div>
+                            <div class="cell top-number" id="cell-66">66</div>
+                            <div class="cell top-number" id="cell-67">67</div>
+                            <div class="cell top-number" id="cell-68">68</div>
+                            <div class="cell top-number" id="cell-69">69</div>
+                            <div class="cell top-number" id="cell-70">70</div>
+                            <div class="cell top-number" id="cell-71">71</div>
+                            <div class="cell top-number" id="cell-72">72</div>
+                            <div class="cell top-number" id="cell-73">73</div>
+                            <div class="cell top-number" id="cell-74">74</div>
+                            <div class="cell top-number" id="cell-75">75</div>
+                            <div class="cell top-number" id="cell-76">76</div>
+                            <div class="cell top-number" id="cell-77">77</div>
+                            <div class="cell top-number" id="cell-78">78</div>
+                            <div class="cell top-number" id="cell-79">79</div>
+                            <div class="cell top-number" id="cell-80">80</div>
+                    </div>
+                </div>
+            </div>
+            <!-- CAPTION BOX-->
+            <div class="caption1">
+                <div class="caption_container" >
+                    <div class="caption" id="caption">My Keno Buddy</div>
+                </div>
+            </div>
+            <!-- CONTROL PANEL -->
+            <div class="control-panel">
+                <div class="controls">
+                    <div class="button-container">
+                        <button id="previous" class="button">Prev</button>
+                        <button id="draw" class="button">Draw</button>
+                        <button id="chances" class="button">Chances</button>
+                        <button id="clear" class="button">Clear</button>
+                    </div>
+                    <div class="switch-container" id="switch-container">
+                        <button class="switch" id="switch-btn1" onclick="toggleSwitch(1)">Tails</button>
+                        <button class="switch" id="switch-btn2" onclick="toggleSwitch(2)">Heads</button>
+                        <button class="switch" id="switch-btn3" onclick="toggleSwitch(3)">Evens</button>
+                        <button class="switch" id="switch-btn4" onclick="toggleSwitch(4)">Odds</button>
+                    </div>
+                </div>
+            </div>
+            <!-- STRATEGIES -->
+            <div class="strats">
+                <div class="item-strats" id="item-strats">
+                    <button id="test-btn1" onclick="testSwitch(1, 'Plucker')" class="button">Plucker</button>
+                    <button id="test-btn2" onclick="testSwitch(2, 'Picks')" class="button">Picks</button>
+                    <button id="test-btn3" onclick="testSwitch(3, 'Selects')" class="button">Selects</button>
+                    <button id="test-btn4" onclick="testSwitch(4, 'Taps')" class="button">Taps</button>
+                    <button id="test-btn5" onclick="testSwitch(5, 'Digs')" class="button">Digs</button>
+                    <button id="test-btn6" onclick="testSwitch(6, 'Grabs')" class="button">Grabs</button>
+                    <button id="test-btn7" onclick="testSwitch(7, 'Snags')" class="button">Snags</button>
+                    <button id="test-btn8" onclick="testSwitch(8, 'Wagers')" class="button">Wagers</button>
+                    <button id="test-btn9" onclick="testSwitch(9, 'Stakes')" class="button">Stakes</button>
+                </div>
+            </div>
+            <!-- HOT N COLD-->
+            <div class="hot-cold">  
+                <div class="hot">
+                    <div class="hot-item" id="hot-item1"></div>
+                    <div class="hot-item" id="hot-item2"></div>
+                    <div class="hot-item" id="hot-item3"></div>
+                    <div class="hot-item" id="hot-item4"></div>
+                    <div class="hot-item" id="hot-item5"></div>
+                    <div class="hot-item" id="hot-item6"></div>
+                    <div class="hot-item noDisplay" id="hot-item7"></div>
+                    <div class="hot-item noDisplay" id="hot-item8"></div>
+                    <div class="hot-item noDisplay" id="hot-item9"></div>
+                    <div class="hot-item noDisplay" id="hot-item10"></div>
+                </div>
+                <div class="cold">
+                    <div class="cold-item" id="cold-item1"></div>
+                    <div class="cold-item" id="cold-item2"></div>
+                    <div class="cold-item" id="cold-item3"></div>
+                    <div class="cold-item" id="cold-item4"></div>
+                    <div class="cold-item" id="cold-item5"></div>
+                    <div class="cold-item" id="cold-item6"></div>
+                    <div class="cold-item noDisplay" id="cold-item7"></div>
+                    <div class="cold-item noDisplay" id="cold-item8"></div>
+                    <div class="cold-item noDisplay" id="cold-item9"></div>
+                    <div class="cold-item noDisplay" id="cold-item10"></div>
+                </div>
+            
+            </div>
+            <!-- CRAZY NUMBERS -->
+            <div class="crazies">
+                <div id="dynamicContent"></div>     
+            </div>
+        </div>
+        <!-- MESSAGE OVERLAY-->
+        <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; color: white; font-size: 20px;">
+            <div>Stand by, changing jurisdiction...</div>
+        </div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </body>
+    </html>
