@@ -1,9 +1,7 @@
 let intervalId;
 let isFetching = false; // Flag to prevent duplicate fetches
-let isChecking = false;
 var currentIndex = 0;
 let globalCurrentDraw = [];
-let globalGameNumber = [];
 let globalCurrentGameNumber = [];
 let globalPreviousGameNumber= [];
 let globalNumbers_array = [];
@@ -46,9 +44,11 @@ function fetchDataAndUpdateDOM() {
     // Add event listeners for change events on the dropdowns using the intermediary functions
     document.getElementById('jurisdiction').addEventListener('change', onJurisdictionChange);
     document.getElementById('numOfGames').addEventListener('change', onNumOfGamesChange);
+
     const jurisdiction = document.getElementById('jurisdiction').value;
     const numOfGames = document.getElementById('numOfGames').value;
     
+
     fetch('/fetch', {
             method: 'POST',
             headers: {
@@ -59,25 +59,20 @@ function fetchDataAndUpdateDOM() {
         .then(response => response.json())
         .then(responseData  => {
 
-            const processedData = responseData.data.processedData; //draws, current_game_number, count_values, indices, hot_numbers, cold_numbers
-            const numbers_array = Array.from({length: 80}, (_, index) => index + 1);
-            
-            const current_draw = processedData.draws[0];
-            const game_number = processedData.game_numbers[0]; //an array of number when they came out of the game
-
+            // Assuming the original data with 'selling' object is under 'originalData'
+            const data = responseData.originalData;
+            const processedData = responseData.processedData;
+            const numbers_array = responseData.processedData.numbers_array;
+            const current_draw = responseData.processedData.current_draw;
             const arrayLength = current_draw.length;
-            const cold_numbers = processedData.cold_numbers;
-            const indices = processedData.indices;
-            const count_values = processedData.count_values;
-            const difference_in_seconds = processedData.difference_in_seconds;
+            const cold_numbers = responseData.processedData.cold_numbers;
 
             //GLOBALS
-            globalGameNumber = game_number;
-            globalCurrentDraw = current_draw;
-            globalCurrentGameNumber = processedData.current_game_number;
+            globalCurrentDraw = responseData.processedData.current_draw;
+            globalCurrentGameNumber = responseData.processedData.current_game_number;
             globalNumbers_array = numbers_array;
             
-            const firstFiveElementsFromEach = indices.map(innerArray => {
+            const firstFiveElementsFromEach = responseData.processedData.indices.map(innerArray => {
                 // Check if innerArray exists
                 if (innerArray && innerArray.length > 0) {
                     switch (innerArray.length) {
@@ -101,10 +96,38 @@ function fetchDataAndUpdateDOM() {
                 }
             });
 
+            const count_values = responseData.processedData.count_values;
             
-            updateDOMWithGameData(processedData, firstFiveElementsFromEach, count_values, current_draw, game_number); // Updates DOM with the game data
-            //manageCountdown(160); // Manages the countdown and game stat
+            if (!data || !data.selling || !data.selling.closing) {
+                console.error('selling.closing is undefined');
+                return; // Exit if the expected data is not present
+            }
 
+            // Check if running on an iPhone
+            if (/iPhone/i.test(userAgent)) {
+                // Code specific to iPhone
+                const now = new Date();
+                const closingTime = new Date(data.selling.closing);
+                const differenceInSeconds = (closingTime - now) / 1000;
+                console.log(`Difference in seconds on iPhone: ${Math.floor(differenceInSeconds)}`);
+                if (differenceInSeconds > 0) {
+                    updateDOMWithGameData(data, processedData, firstFiveElementsFromEach, count_values, current_draw); // Updates DOM with the game data
+                    manageCountdown(differenceInSeconds, data); // Manages the countdown and game state
+                } 
+
+            } else {
+                // Code for other devices (e.g., PC)
+                const now = new Date();
+                const closingTime = new Date(data.selling.closing);
+                const cvtOffset = 1 * 60 * 60 * 1000; // For UTC-1
+                const cvtTime = new Date(now.getTime() - cvtOffset);
+                const differenceInSeconds = (closingTime - cvtTime) / 1000;
+                console.log(`Difference in seconds on PC/Other: ${Math.floor(differenceInSeconds)}`);
+                if (differenceInSeconds > 0) {
+                    updateDOMWithGameData(data, processedData, firstFiveElementsFromEach, count_values, current_draw); // Updates DOM with the game data
+                    manageCountdown(differenceInSeconds, data); // Manages the countdown and game state
+                } 
+            }
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -114,47 +137,7 @@ function fetchDataAndUpdateDOM() {
         });
 }
 
-function checkDB(){
-    if (isChecking) return;
-    isChecking = true;
-    document.getElementById('jurisdiction').addEventListener('change', onJurisdictionChange);
-    const jurisdiction = document.getElementById('jurisdiction').value;
-    
-    fetch('/check', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ jurisdiction }),
-    })
-    .then(response => {
-        if (!response.ok){
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if(data.newRecords) {
-            revertStyles(); // Assuming this resets some styles - ensure this function is defined elsewhere
-            clearInterval(intervalId); // Stop the countdown
-            manageCountdown(145);
-            fetchDataAndUpdateDOM();
-            console.log('New records found', data.newRecords);
-        } else{
-            console.log('No new records found.');
-        }
-    })
-    .catch(err => {
-        console.error('Failed to fetch new record', err);
-    })
-    .finally(() => {
-        isChecking = false;
-    });
-}
-
-setInterval(checkDB, 10000);
-
-///////////////////////////////////////////////////////////
+// Intermediary function for jurisdiction change
 function onJurisdictionChange() {
     console.log('Jurisdiction changed to: ', document.getElementById('jurisdiction').value);
     const selectedJurisdiction = this.value;
@@ -171,6 +154,7 @@ function onJurisdictionChange() {
     }, 3000);
 
 }
+
 function onNumOfGamesChange() {
     console.log('Number of Games changed to: ', document.getElementById('numOfGames').value);
     const selectedNumOfGames = this.value;
@@ -178,41 +162,47 @@ function onNumOfGamesChange() {
 
     fetchDataAndUpdateDOM();
 }
+
 function showLoadingMessage() {
     document.getElementById('loadingOverlay').style.display = 'flex';
 }
+
 function hideLoadingMessage() {
     document.getElementById('loadingOverlay').style.display = 'none';
 }
-function manageCountdown(differenceInSeconds) {
+
+function manageCountdown(differenceInSeconds, data) {
     clearInterval(intervalId); // Clear any existing countdown
     let countdownSeconds = Math.floor(differenceInSeconds);
 
     intervalId = setInterval(() => {
+        // First, check if the countdown has reached or passed zero
         if (countdownSeconds <= 0) {
             revertStyles(); // Assuming this resets some styles - ensure this function is defined elsewhere
             clearInterval(intervalId); // Stop the countdown
-            
+            document.getElementById('timer').textContent = '5 seconds.';
             document.getElementById('gameState').textContent = 'closed.';
     
+            // Delay fetching new game data by 5 seconds after the game closes
             setTimeout(function() {
                 fetchDataAndUpdateDOM(); // Ensure this function is defined elsewhere
             }, 5000);
-        } else if (countdownSeconds <= 4) {
-            document.getElementById('timer').textContent = '5 seconds.';
+        } else if (countdownSeconds <= 5) {
+            // If there are 5 seconds or less remaining, but it's not yet zero
             document.getElementById('gameState').textContent = 'closing...';
         } else {
             // Update the countdown timer every second until it reaches the above conditions
             document.getElementById('timer').textContent = `Next: ${countdownSeconds}`;
             document.getElementById('gameState').textContent = 'Results';
         }
+    
         countdownSeconds -= 1; // Decrement the countdown each second
     }, 1000);
+    
 }
 
-function updateDOMWithGameData(processedData, firstFiveElementsFromEach, count_values, current_draw, game_number) {
-
-    document.getElementById('gameNumber').textContent = `Number: ${game_number}`;
+function updateDOMWithGameData(data, processedData, firstFiveElementsFromEach, count_values, current_draw) {
+    document.getElementById('gameNumber').textContent = `Number: ${data.current['game-number']}`;
     
     updateBoard(firstFiveElementsFromEach, count_values);
     runMain(current_draw, currentIndex, current_draw.length);
@@ -227,9 +217,20 @@ function updateDOMWithGameData(processedData, firstFiveElementsFromEach, count_v
         remainingData(processedData.indices, globalPreviousDraw);
     } 
 
-    let message1 = 'Latest Game No. ' + globalGameNumber;
+    let message1 = 'Latest Game No. ' + globalCurrentGameNumber;
     caption.innerHTML = message1
     caption1.innerHTML = message1
+}
+
+function formatDate(isoDate) {
+    const date = new Date(isoDate);
+    return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
+}
+
+function extractTimeToSeconds(isoTimestamp) {
+    const closingTime = new Date(isoTimestamp);
+    const now = new Date();
+    return Math.floor((closingTime - now) / 1000);
 }
 
 function updateBoard(firstFiveElementsFromEach, countValues) {
@@ -594,33 +595,30 @@ function countMatchingElements(arr1, arr2, length, btnName) {
 }
 
 function hotNumber(hotNumbers){
-
-    if (Array.isArray(hotNumbers)) {
-        hotNumbers.forEach((number, index) => {
-            const elementId = `hot-item${index + 1}`;
-            const element = document.getElementById(elementId);
+    let actualArray = JSON.parse(hotNumbers);
+    if (Array.isArray(actualArray)) {
+        actualArray.forEach((number, index) => {
+            const element = document.getElementById(`hot-item${index + 1}`);
             if (element) {
                 element.textContent = number;
-            } else {
-                console.warn('Element not found:', elementId);
             }
-        });
+            });
     } else {
-        console.error('hotNumbers is not an array:', hotNumbers);
+        console.error('hotNumbers is not an array:', actualArray);
     }
 }
 
 function coldNumber(coldNumbers){
-    //let actualArray = JSON.parse(coldNumbers);
-    if (Array.isArray(coldNumbers)) {
-        coldNumbers.forEach((number, index) => {
+    let actualArray = JSON.parse(coldNumbers);
+    if (Array.isArray(actualArray)) {
+        actualArray.forEach((number, index) => {
             const element = document.getElementById(`cold-item${index + 1}`);
             if (element) {
                 element.textContent = number;
             }
             });
     } else {
-        console.error('coldNumbers is not an array:', coldNumbers);
+        console.error('coldNumbers is not an array:', actualArray);
     }
 }
 
@@ -640,7 +638,7 @@ clear.addEventListener("click", function() {
 draw.addEventListener("click", function() {
     currentIndex = 0;
     revertStyles();
-    let message1 = 'Just got the current draw for game no. ' + globalGameNumber;
+    let message1 = 'Just got the current draw for game no. ' + globalCurrentGameNumber;
     caption.innerHTML = message1
     caption1.innerHTML = message1
     runMain(globalCurrentDraw, currentIndex, globalCurrentDraw.length);
@@ -671,7 +669,7 @@ previous.addEventListener("click", function() {
         caption.innerHTML = message1
         caption1.innerHTML = message1
     } else {
-        let message1 = 'Previous Draw' + (globalGameNumber - 1);
+        let message1 = 'Previous Draw';
         caption.innerHTML = message1
         caption1.innerHTML = message1
         runMain(globalPreviousDraw, currentIndex, globalPreviousDraw.length);
