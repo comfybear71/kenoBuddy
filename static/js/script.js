@@ -103,7 +103,7 @@ function fetchDataAndUpdateDOM() {
 
             
             updateDOMWithGameData(processedData, firstFiveElementsFromEach, count_values, current_draw, game_number); // Updates DOM with the game data
-            //manageCountdown(160); // Manages the countdown and game stat
+            manageCountdown(difference_in_seconds); // Manages the countdown and game stat
 
         })
         .catch(error => {
@@ -114,45 +114,45 @@ function fetchDataAndUpdateDOM() {
         });
 }
 
-function checkDB(){
-    if (isChecking) return;
-    isChecking = true;
-    document.getElementById('jurisdiction').addEventListener('change', onJurisdictionChange);
-    const jurisdiction = document.getElementById('jurisdiction').value;
+// function checkDB(){
+//     if (isChecking) return;
+//     isChecking = true;
+//     document.getElementById('jurisdiction').addEventListener('change', onJurisdictionChange);
+//     const jurisdiction = document.getElementById('jurisdiction').value;
     
-    fetch('/check', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ jurisdiction }),
-    })
-    .then(response => {
-        if (!response.ok){
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if(data.newRecords) {
-            revertStyles(); // Assuming this resets some styles - ensure this function is defined elsewhere
-            clearInterval(intervalId); // Stop the countdown
-            manageCountdown(145);
-            fetchDataAndUpdateDOM();
-            console.log('New records found', data.newRecords);
-        } else{
-            console.log('No new records found.');
-        }
-    })
-    .catch(err => {
-        console.error('Failed to fetch new record', err);
-    })
-    .finally(() => {
-        isChecking = false;
-    });
-}
+//     fetch('/check', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ jurisdiction }),
+//     })
+//     .then(response => {
+//         if (!response.ok){
+//             throw new Error('Network response was not ok');
+//         }
+//         return response.json();
+//     })
+//     .then(data => {
+//         if(data.newRecords) {
+//             revertStyles(); // Assuming this resets some styles - ensure this function is defined elsewhere
+//             clearInterval(intervalId); // Stop the countdown
+//             manageCountdown(145);
+//             fetchDataAndUpdateDOM();
+//             console.log('New records found', data.newRecords);
+//         } else{
+//             console.log('No new records found.');
+//         }
+//     })
+//     .catch(err => {
+//         console.error('Failed to fetch new record', err);
+//     })
+//     .finally(() => {
+//         isChecking = false;
+//     });
+// }
 
-setInterval(checkDB, 10000);
+// setInterval(checkDB, 10000);
 
 ///////////////////////////////////////////////////////////
 function onJurisdictionChange() {

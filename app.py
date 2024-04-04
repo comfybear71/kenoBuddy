@@ -1,17 +1,19 @@
 from flask import Flask, jsonify, render_template, request, session, Response
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 import numpy as np
 import json
 import configparser
 import MySQLdb
+from dateutil import parser
+import pytz 
 
 app = Flask(__name__)
 
 jurisdiction = 'ACT'
 numOfGames = 10
 last_checked_id = 0
-difference_in_seconds = 160
+difference_in_seconds = 0
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -191,43 +193,43 @@ def proxy():
 
         return jsonify({"error": "Invalid request"}), 400
 
-@app.route('/check', methods=['GET', 'POST'])
-def check():
-    global last_checked_id
-    conn = connect_to_database()
-    crsr = conn.cursor()
+# @app.route('/check', methods=['GET', 'POST'])
+# def check():
+#     global last_checked_id
+#     conn = connect_to_database()
+#     crsr = conn.cursor()
     
-    if request.method == 'POST':
-        data = request.get_json()
-        jurisdiction = data.get('jurisdiction')
+#     if request.method == 'POST':
+#         data = request.get_json()
+#         jurisdiction = data.get('jurisdiction')
         
-        if conn:
-            table_name = ""
-            if jurisdiction == 'ACT':
-                table_name = "act_draws"
-            elif jurisdiction == 'QLD':
-                table_name = "qld_draws"
-            elif jurisdiction == 'NSW':
-                table_name = "nsw_draws"
-            elif jurisdiction == 'VIC':
-                table_name = "vic_draws"
+#         if conn:
+#             table_name = ""
+#             if jurisdiction == 'ACT':
+#                 table_name = "act_draws"
+#             elif jurisdiction == 'QLD':
+#                 table_name = "qld_draws"
+#             elif jurisdiction == 'NSW':
+#                 table_name = "nsw_draws"
+#             elif jurisdiction == 'VIC':
+#                 table_name = "vic_draws"
                 
-            if table_name:
-                query = f"SELECT * FROM {table_name} WHERE id > %s ORDER BY id DESC"
-                crsr.execute(query, (last_checked_id,))
-                results = crsr.fetchall()
-                if results:
-                    last_checked_id = results[0][0]
-                    return jsonify({"newRecords": True, 'records': results})
-                else:
-                    return jsonify({"newRecords":False})
+#             if table_name:
+#                 query = f"SELECT * FROM {table_name} WHERE id > %s ORDER BY id DESC"
+#                 crsr.execute(query, (last_checked_id,))
+#                 results = crsr.fetchall()
+#                 if results:
+#                     last_checked_id = results[0][0]
+#                     return jsonify({"newRecords": True, 'records': results})
+#                 else:
+#                     return jsonify({"newRecords":False})
 
-            crsr.close()
-            conn.close()
+#             crsr.close()
+#             conn.close()
 
 
 def process_records(data, records):        
-    global difference_in_seconds
+    
     for record in records:
         id, current_game_number, current_closed, draw, opened, closing = record
         # print(f"Game ID: {id}")
@@ -243,16 +245,16 @@ def process_records(data, records):
     
     numbers_arrays = [num for num in range(1, 81)]
     
-    # Check if either variable is None
-    if opened is None or closing is None:
-        print("One of the times is None, cannot calculate difference.")
-    else:
-        # Proceed with the calculation since both are not None
-        time1 = datetime.strptime(opened, '%Y-%m-%d %H:%M:%S')
-        time2 = datetime.strptime(closing, '%Y-%m-%d %H:%M:%S')
-        difference_in_seconds = (time2 - time1).total_seconds()
-        print(f"The difference in seconds is: {difference_in_seconds}")
-        
+    global difference_in_seconds
+    
+    closing = records[0][5]
+    utc_now = datetime.now(timezone.utc)
+    utc_now_on_arbitrary_date = utc_now.replace(year=2000, month=1, day=1, microsecond=0)
+    closing_on_arbitrary_date = closing.replace(year=2000, month=1, day=1, microsecond=0)
+    utc_now_on_arbitrary_date_naive = utc_now_on_arbitrary_date.replace(tzinfo=None)
+    difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date_naive).total_seconds())
+
+    print(difference_in_seconds, 'seconds')
     
     responseData = {
         "originalData": data,

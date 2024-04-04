@@ -1,14 +1,14 @@
 import MySQLdb
 import aiohttp
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 import configparser
 import json
 from dateutil import parser
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-difference_in_seconds = 160
+difference_in_seconds = 0
 
 HOSTNAME = config.get('default', 'hostname')
 USERNAME = config.get('default', 'username')
@@ -52,26 +52,17 @@ async def insert_into_db(data):
     
     current = data.get('current', {})
     selling = data.get('selling', {})
-    
     current_game_number = current.get('game-number')
     draw = current.get('draw')
     closed = current.get('closed')
-    
     opened = selling.get('opened')
     closing = selling.get('closing')
-    
-    
-    # Check if either variable is None
-    if opened is None or closing is None:
-        print("One of the times is None, cannot calculate difference.")
-    else:
-        # Proceed with the calculation since both are not None
-        time1 = parser.parse(opened)
-        time2 = parser.parse(closing)
-        difference_in_seconds = (time2 - time1).total_seconds()
-        print(f"The difference in seconds is: {difference_in_seconds}")
-        
-        
+    utc_now = datetime.now(timezone.utc)
+    closing = parser.parse(closing)
+    utc_now_on_arbitrary_date = utc_now.replace(year=2000, month=1, day=1, microsecond=0)
+    closing_on_arbitrary_date = closing.replace(year=2000, month=1, day=1, microsecond=0)
+    difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date).total_seconds())
+
     if draw is not None:
         draw_json = json.dumps(list(draw))
         
@@ -112,9 +103,7 @@ async def continuously_check_condition(api_url):
         if data:
             await insert_into_db(data)
         
-        # Adjust sleep duration based on insertion result
-        #sleep_duration = 160 if record_inserted else 5
-        await asyncio.sleep(difference_in_seconds)
+        await asyncio.sleep(difference_in_seconds + 2)
 
 
 api_url = 'https://api-info-nsw.keno.com.au/v2/games/kds?jurisdiction=NSW'
