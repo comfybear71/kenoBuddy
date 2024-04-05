@@ -1,12 +1,10 @@
 from flask import Flask, jsonify, render_template, request, session, Response
-import requests
 from datetime import datetime, timezone
 import numpy as np
 import json
 import configparser
 import MySQLdb
-from dateutil import parser
-import pytz 
+
 
 app = Flask(__name__)
 

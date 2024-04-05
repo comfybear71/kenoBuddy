@@ -47,8 +47,8 @@
     <script>
         jQuery(document).ready(function($) {
             $.getJSON('/data', function(response) {
-                //let gamesToShow = response.data.slice(-6).reverse().slice(1);
-                let gamesToShow = response.data.slice(-5).reverse();
+                let gamesToShow = response.data.slice(-6).reverse().slice(1);
+                //let gamesToShow = response.data.slice(-5).reverse();
             
                 gamesToShow.forEach(gameEntry => {
                     // Define an array of category names to process
