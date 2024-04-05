@@ -180,14 +180,7 @@ def process_records(data, records):
     
     for record in records:
         id, current_game_number, current_closed, draw, opened, closing = record
-        # print(f"Game ID: {id}")
-        # print(f"Game Number: {current_game_number}")
-        # print(f"Game Date: {current_closed}")
-        # print(f"Draw Numbers: {draw}")
-        # print(f"Opened: {opened}")
-        # print(f"Closing: {closing}")
-        # print("----------")
-    # print(data)
+
 
     draws, game_numbers, current_game_number, count_values, indices, hot_numbers, cold_numbers = game_data.returnData(records)
     
