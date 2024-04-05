@@ -35,7 +35,7 @@ async def insert_into_db(data):
     crsr.execute("SELECT COUNT(*) FROM nsw_draws")
     count = crsr.fetchone()[0]
     if count >= 100:
-        crsr.execute("DELETE FROM nsw_draws ORDER BY current_closed LIMIT %s", (count - 99,))
+        crsr.execute("DELETE FROM nsw_draws ORDER BY id LIMIT %s", (count - 99,))
 
     crsr.execute("SELECT 1 FROM nsw_draws WHERE current_game_number = %s LIMIT 1", (current_game_number,))
     

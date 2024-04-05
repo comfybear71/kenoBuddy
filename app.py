@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import numpy as np
 import json
 import configparser
-import MySQLdb
+import aiohttp
 from dbconnector.connector import connect_to_database
 from dbconnector.timeutils import calculate_time_difference
 
@@ -165,7 +165,7 @@ def proxy():
                 
             if table_name:
                 # Directly using numOfGames in the query after validation
-                query = f"SELECT * FROM {table_name} ORDER BY current_game_number DESC LIMIT {numOfGames}"
+                query = f"SELECT * FROM {table_name} ORDER BY id DESC LIMIT {numOfGames}"
                 crsr.execute(query)
                 records = crsr.fetchall()
                 crsr.close()
@@ -195,16 +195,18 @@ def process_records(data, records):
     utc_now_on_arbitrary_date_naive = utc_now_on_arbitrary_date.replace(tzinfo=None)
     difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date_naive).total_seconds())
     
-    # difference_in_seconds = calculate_time_difference(closing_on_arbitrary_date)
-    # print(difference_in_seconds, 'Before if statement seconds')
-    # print(closing, 'closing')
+    #difference_in_seconds = calculate_time_difference(closing_on_arbitrary_date)
+    print(difference_in_seconds, 'Before if statement seconds')
+    print(closing, 'closing')
 
     if difference_in_seconds < 0:
         sendError = "error"
+        difference_in_seconds = 30
     else:
         sendError = ""
 
-    # print(difference_in_seconds, 'seconds')
+    print(difference_in_seconds, 'seconds')
+    
     
     responseData = {
         "originalData": data,
@@ -225,6 +227,8 @@ def process_records(data, records):
     }
 
     return jsonify({"data": responseData})
+
+
 
 class GameData:
 
