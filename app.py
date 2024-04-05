@@ -4,6 +4,8 @@ import numpy as np
 import json
 import configparser
 import MySQLdb
+from dbconnector.connector import connect_to_database
+from dbconnector.timeutils import calculate_time_difference
 
 
 app = Flask(__name__)
@@ -16,23 +18,10 @@ difference_in_seconds = 0
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-HOSTNAME = config.get('default', 'hostname')
-USERNAME = config.get('default', 'username')
-PASSWORD = config.get('default', 'password')
-DATABASE = config.get('default', 'database')
-
-#CTRL + SHIFT + L multiple select tool
-# Collapse: Ctrl + Shift + [ 
-# Expand: Ctrl + Shift + ] 
-
-# Function to connect to the database
-def connect_to_database():
-    conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWORD, db=DATABASE)
-    return conn
 
 @app.route('/data', methods=['GET'])
 def fetch_data():
-    conn = connect_to_database()
+    conn = connect_to_database('config.ini')
     crsr = conn.cursor()
     if conn:
         
@@ -48,18 +37,13 @@ def fetch_data():
         crsr.close()
         conn.close()
 
-        # Example data manipulation: Counting the records
-        #record_count = len(records)
-        
-        # More complex manipulations can go here
-
         return jsonify({"data": results})
     else:
         return jsonify({"error": "Database connection failed."})
 
 @app.route('/act', methods=['GET'])
 def fetch_act():
-    conn = connect_to_database()
+    conn = connect_to_database('config.ini')
     crsr = conn.cursor()
     if conn:
         
@@ -78,7 +62,7 @@ def fetch_act():
 
 @app.route('/nsw', methods=['GET'])
 def fetch_nsw():
-    conn = connect_to_database()
+    conn = connect_to_database('config.ini')
     crsr = conn.cursor()
     if conn:
         
@@ -97,7 +81,7 @@ def fetch_nsw():
 
 @app.route('/qld', methods=['GET'])
 def fetch_qld():
-    conn = connect_to_database()
+    conn = connect_to_database('config.ini')
     crsr = conn.cursor()
     if conn:
         
@@ -116,7 +100,7 @@ def fetch_qld():
 
 @app.route('/vic', methods=['GET'])
 def fetch_vic():
-    conn = connect_to_database()
+    conn = connect_to_database('config.ini')
     crsr = conn.cursor()
     if conn:
         
@@ -159,7 +143,7 @@ def vic_view():
 
 @app.route('/fetch', methods=['GET', 'POST'])
 def proxy():
-    conn = connect_to_database()
+    conn = connect_to_database('config.ini')
     crsr = conn.cursor()
     
     if request.method == 'POST':
@@ -217,6 +201,8 @@ def process_records(data, records):
     closing_on_arbitrary_date = closing.replace(year=2000, month=1, day=1, microsecond=0)
     utc_now_on_arbitrary_date_naive = utc_now_on_arbitrary_date.replace(tzinfo=None)
     difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date_naive).total_seconds())
+    
+    # difference_in_seconds = calculate_time_difference(closing_on_arbitrary_date)
 
     print(difference_in_seconds, 'seconds')
     

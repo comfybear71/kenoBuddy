@@ -5,45 +5,32 @@ from datetime import datetime, timezone
 import configparser
 import json
 from dateutil import parser
+from dbconnector.connector import connect_to_database
+from dbconnector.timeutils import calculate_time_difference
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 difference_in_seconds = 0
 
-HOSTNAME = config.get('default', 'hostname')
-USERNAME = config.get('default', 'username')
-PASSWORD = config.get('default', 'password')
-DATABASE = config.get('default', 'database')
-
-# Function to connect to the database
-def connect_to_database():
-    conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWORD, db=DATABASE)
-    return conn
-
 
 async def insert_into_db(data):
-    conn = connect_to_database()
+    conn = connect_to_database('config.ini')
     crsr = conn.cursor()
     record_inserted = False  # Default to False
     
     global difference_in_seconds
     
-    current = data.get('current', {})
-    selling = data.get('selling', {})
-    current_game_number = current.get('game-number')
-    draw = current.get('draw')
-    closed = current.get('closed')
-    opened = selling.get('opened')
-    closing = selling.get('closing')
-    utc_now = datetime.now(timezone.utc)
-    closing = parser.parse(closing)
-    utc_now_on_arbitrary_date = utc_now.replace(year=2000, month=1, day=1, microsecond=0)
-    closing_on_arbitrary_date = closing.replace(year=2000, month=1, day=1, microsecond=0)
-    difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date).total_seconds())
-
+    difference_in_seconds = calculate_time_difference(data.get('selling', {}).get('closing'))
+    current_game_number = data.get('current', {}).get('game-number')
+    draw = data.get('current', {}).get('draw')
+    closed = data.get('current', {}).get('closed')
+    opened = data.get('selling', {}).get('opened')
+    closing = data.get('selling', {}).get('closing')
+    
     if draw is not None:
         draw_json = json.dumps(list(draw))
-        
+    else:
+        print('WTF')
     
     crsr.execute("SELECT COUNT(*) FROM nsw_draws")
     count = crsr.fetchone()[0]
