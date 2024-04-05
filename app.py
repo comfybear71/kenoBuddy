@@ -193,40 +193,6 @@ def proxy():
 
         return jsonify({"error": "Invalid request"}), 400
 
-# @app.route('/check', methods=['GET', 'POST'])
-# def check():
-#     global last_checked_id
-#     conn = connect_to_database()
-#     crsr = conn.cursor()
-    
-#     if request.method == 'POST':
-#         data = request.get_json()
-#         jurisdiction = data.get('jurisdiction')
-        
-#         if conn:
-#             table_name = ""
-#             if jurisdiction == 'ACT':
-#                 table_name = "act_draws"
-#             elif jurisdiction == 'QLD':
-#                 table_name = "qld_draws"
-#             elif jurisdiction == 'NSW':
-#                 table_name = "nsw_draws"
-#             elif jurisdiction == 'VIC':
-#                 table_name = "vic_draws"
-                
-#             if table_name:
-#                 query = f"SELECT * FROM {table_name} WHERE id > %s ORDER BY id DESC"
-#                 crsr.execute(query, (last_checked_id,))
-#                 results = crsr.fetchall()
-#                 if results:
-#                     last_checked_id = results[0][0]
-#                     return jsonify({"newRecords": True, 'records': results})
-#                 else:
-#                     return jsonify({"newRecords":False})
-
-#             crsr.close()
-#             conn.close()
-
 
 def process_records(data, records):        
     
@@ -269,7 +235,7 @@ def process_records(data, records):
             "numbers_array": numbers_arrays,
             "opened": opened,
             "closing": closing,
-            "difference_in_seconds": difference_in_seconds
+            "difference_in_seconds": difference_in_seconds + 2
         }
     }
 
@@ -292,26 +258,20 @@ class GameData:
         
         number_stats = {num: {"count": 0, "indices": [], "game-number": []} for num in range(1, 81)}
         
-        # Iterate over each draw list
         for i, draw in enumerate(draws):
-            # Iterate over each number in the draw list
             for num in draw:
-                if 1 <= num <= 80:  # Ensure num is within the desired range
+                if 1 <= num <= 80: 
                     number_stats[num]["count"] += 1
-                    # Use i+1 if you want indices to start from 1
                     number_stats[num]["indices"].append(i + 1)
                     number_stats[num]["game-number"].append(current_game_numbers[i])
 
-        # Initialize an output list to store the results
         output_list = []
-        # Iterate over each number in number_stats
+        
         for num, stats in number_stats.items():
             if stats["count"] > 0:
-                # Append the number, count, indices, and game numbers to the output list as a tuple
                 output_list.append(
                     (num, stats['count'], stats['indices'], stats['game-number']))
             else:
-                # If the number was not drawn, append a message to the output list
                 output_list.append(f"Number {num}: Not drawn")
 
         unique, counts = np.unique(draws, return_counts=True)
@@ -325,17 +285,15 @@ class GameData:
 
         # Iterate through each tuple
         for tpl in output_list:
-            # Ensure the tuple has at least four elements before unpacking
             if len(tpl) >= 4:
                 c = tpl[1]
                 idx = tpl[2]
                 game_num = tpl[3]
 
-                count_values.append(c) #NUMBER OF TIMES NUMBERS DRAWN IN 20, 50, 100
+                count_values.append(c)
                 indices.append(idx)
                 current_game_number.append(game_num)
                 
-        # print(current_game_number)
 
         list1 = []
         list2 = []
@@ -349,7 +307,6 @@ class GameData:
         cold_numbers = list1[70:80]
         cold_number_count = list2[70:80]
 
-        # Convert NumPy arrays to lists (for JSON serializable format)
         hot_numbers = list(map(int, hot_numbers))
         hot_number_count = list(map(int, hot_number_count))
         cold_numbers = list(map(int, cold_numbers))

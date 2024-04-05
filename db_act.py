@@ -20,28 +20,6 @@ def connect_to_database():
     conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWORD, db=DATABASE)
     return conn
 
-# def ensure_tables_exist():
-#     conn = connect_to_database()
-#     crsr = conn.cursor()
-#     sql_command_create_table = """CREATE TABLE IF NOT EXISTS act_draws (
-#                             id INT AUTO_INCREMENT PRIMARY KEY,
-#                             current_game_number INT NOT NULL,
-#                             current_closed DATETIME,
-#                             draw JSON,
-#                             opened DATETIME,
-#                             closing DATETIME,
-#                             CONSTRAINT UC_GameNumber UNIQUE (current_game_number)
-#                         );"""
-#     try:
-#         crsr.execute(sql_command_create_table)
-#         conn.commit()
-#         print("Tables ensured to exist successfully.")
-#     except Exception as e:
-#         print(f"An error occurred while ensuring tables exist: {e}")
-#     finally:
-#         crsr.close()
-#         conn.close()
-# ensure_tables_exist()
 
 async def insert_into_db(data):
     conn = connect_to_database()
@@ -110,3 +88,25 @@ async def continuously_check_condition(api_url):
 api_url = 'https://api-info-act.keno.com.au/v2/games/kds?jurisdiction=ACT'
 asyncio.run(continuously_check_condition(api_url))
 
+# def ensure_tables_exist():
+#     conn = connect_to_database()
+#     crsr = conn.cursor()
+#     sql_command_create_table = """CREATE TABLE IF NOT EXISTS act_draws (
+#                             id INT AUTO_INCREMENT PRIMARY KEY,
+#                             current_game_number INT NOT NULL,
+#                             current_closed DATETIME,
+#                             draw JSON,
+#                             opened DATETIME,
+#                             closing DATETIME,
+#                             CONSTRAINT UC_GameNumber UNIQUE (current_game_number)
+#                         );"""
+#     try:
+#         crsr.execute(sql_command_create_table)
+#         conn.commit()
+#         print("Tables ensured to exist successfully.")
+#     except Exception as e:
+#         print(f"An error occurred while ensuring tables exist: {e}")
+#     finally:
+#         crsr.close()
+#         conn.close()
+# ensure_tables_exist()

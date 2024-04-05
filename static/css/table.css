@@ -44,7 +44,7 @@ body {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     margin-top: 10px;
     width: 100%;
-    margin-left: 60px;
+    margin-left: 15px;
 }
 
 .mini_row {

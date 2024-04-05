@@ -48,7 +48,8 @@
         jQuery(document).ready(function($) {
             $.getJSON('/qld', function(response) {
                 // Get the last 6 games (to exclude the very last one), then reverse and take the first 5
-                let gamesToShow = response.data.slice(-6).reverse().slice(1);
+                //let gamesToShow = response.data.slice(-6).reverse().slice(1);
+                let gamesToShow = response.data.slice(-5).reverse();
             
                 gamesToShow.forEach(gameEntry => {
                     // Define an array of category names to process
