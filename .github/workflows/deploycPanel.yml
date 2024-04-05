@@ -1,0 +1,22 @@
+name: Deploy to FTP Server
+
+# This workflow triggers on every push to the main branch.
+on:
+  push:
+    branches:
+      - main  # Or your default branch, e.g., master
+
+jobs:
+  ftp-deploy:
+    name: Deploy via FTP
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: FTP Deploy Action
+      uses: SamKirkland/FTP-Deploy-Action@4.2.0
+      with:
+        ftp-server: ftp.kenobuddy.com.au
+        ftp-username: stuart@kenobuddy.com.au
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: /home/kenobuddycom/public_html/ftp/  # Directory to upload, leave as "./" to upload the entire repo
+        # git-ftp-args: --insecure   Use this if your FTP server is using self-signed certificates
