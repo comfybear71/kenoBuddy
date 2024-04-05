@@ -203,8 +203,15 @@ def process_records(data, records):
     difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date_naive).total_seconds())
     
     # difference_in_seconds = calculate_time_difference(closing_on_arbitrary_date)
+    # print(difference_in_seconds, 'Before if statement seconds')
+    # print(closing, 'closing')
 
-    print(difference_in_seconds, 'seconds')
+    if difference_in_seconds < 0:
+        sendError = "error"
+    else:
+        sendError = ""
+
+    # print(difference_in_seconds, 'seconds')
     
     responseData = {
         "originalData": data,
@@ -219,7 +226,8 @@ def process_records(data, records):
             "numbers_array": numbers_arrays,
             "opened": opened,
             "closing": closing,
-            "difference_in_seconds": difference_in_seconds + 2
+            "difference_in_seconds": difference_in_seconds + 2,
+            "sendError": sendError
         }
     }
 

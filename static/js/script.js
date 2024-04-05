@@ -76,6 +76,16 @@ function fetchDataAndUpdateDOM() {
             globalCurrentDraw = current_draw;
             globalCurrentGameNumber = processedData.current_game_number;
             globalNumbers_array = numbers_array;
+
+            if(processedData.sendError === "error"){
+                // Show the error overlay
+                document.getElementById('errorOverlay').style.display = 'flex';
+            }
+
+            // Optionally, hide the overlay after some time
+            setTimeout(() => {
+                document.getElementById('errorOverlay').style.display = 'none';
+            }, 5000); // Adjust time as necessary
             
             const firstFiveElementsFromEach = indices.map(innerArray => {
                 // Check if innerArray exists
