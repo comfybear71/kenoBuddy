@@ -63,7 +63,6 @@ async def call_api(url):
             return await response.json()
 
 async def continuously_check_condition(api_url):
-    # difference_in_seconds = 10  # Example value, adjust as necessary
     while True:
         data = await call_api(api_url)
         
@@ -72,12 +71,7 @@ async def continuously_check_condition(api_url):
         
         await asyncio.sleep(difference_in_seconds + 2)
 
-api_url = 'https://api-info-act.keno.com.au/v2/games/kds?jurisdiction=ACT'
 
-# Creating and managing the event loop manually for Python 3.6
-loop = asyncio.get_event_loop()
-try:
-    loop.run_until_complete(continuously_check_condition(api_url))
-finally:
-    loop.close()
+api_url = 'https://api-info-act.keno.com.au/v2/games/kds?jurisdiction=ACT'
+asyncio.run(continuously_check_condition(api_url))
 

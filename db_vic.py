@@ -22,8 +22,11 @@ async def insert_into_db(data):
     
     difference_in_seconds = calculate_time_difference(data.get('selling', {}).get('closing'))
     current_game_number = data.get('current', {}).get('game-number')
+    
     draw = data.get('current', {}).get('draw')
+    
     closed = data.get('current', {}).get('closed')
+    
     opened = data.get('selling', {}).get('opened')
     closing = data.get('selling', {}).get('closing')
     
@@ -62,21 +65,15 @@ async def call_api(url):
             return await response.json()
 
 async def continuously_check_condition(api_url):
-    # difference_in_seconds = 10  # Example value, adjust as necessary
     while True:
         data = await call_api(api_url)
         
         if data:
             await insert_into_db(data)
         
-        await asyncio.sleep(difference_in_seconds + 2)
+        await asyncio.sleep(difference_in_seconds + 5)
+
 
 api_url = 'https://api-info-vic.keno.com.au/v2/games/kds?jurisdiction=VIC'
-
-# Creating and managing the event loop manually for Python 3.6
-loop = asyncio.get_event_loop()
-try:
-    loop.run_until_complete(continuously_check_condition(api_url))
-finally:
-    loop.close()
+asyncio.run(continuously_check_condition(api_url))
 
