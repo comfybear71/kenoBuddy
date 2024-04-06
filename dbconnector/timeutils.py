@@ -9,8 +9,18 @@ def calculate_time_difference(closing):
     :param closing: A string representing the closing time in a parseable format.
     :return: The difference in seconds as an integer.
     """
+    
+    if closing is None:
+        print("Closing time is not provided.")
+        # Handle the None case - return a default value, raise an error, or return None
+        return None  # or another appropriate action
+    else:
+        closing_datetime = parser.parse(closing)
+        # Your existing logic to calculate the time difference
+    
+    
     utc_now = datetime.now(timezone.utc)
-    closing = parser.parse(closing)
+    
     # Set to arbitrary date for comparison
     utc_now_on_arbitrary_date = utc_now.replace(year=2000, month=1, day=1, microsecond=0)
     closing_on_arbitrary_date = closing.replace(year=2000, month=1, day=1, microsecond=0)
