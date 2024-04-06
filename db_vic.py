@@ -62,7 +62,7 @@ async def call_api(url):
             return await response.json()
 
 async def continuously_check_condition(api_url):
-
+    # difference_in_seconds = 10  # Example value, adjust as necessary
     while True:
         data = await call_api(api_url)
         
@@ -71,30 +71,12 @@ async def continuously_check_condition(api_url):
         
         await asyncio.sleep(difference_in_seconds + 2)
 
-
 api_url = 'https://api-info-vic.keno.com.au/v2/games/kds?jurisdiction=VIC'
-asyncio.run(continuously_check_condition(api_url))
 
-# def ensure_tables_exist():
-#     conn = connect_to_database()
-#     crsr = conn.cursor()
-#     sql_command_create_table = """CREATE TABLE IF NOT EXISTS vic_draws (
-#                             id INT AUTO_INCREMENT PRIMARY KEY,
-#                             current_game_number INT NOT NULL,
-#                             current_closed DATETIME,
-#                             draw JSON,
-#                             opened DATETIME,
-#                             closing DATETIME,
-#                             CONSTRAINT UC_GameNumber UNIQUE (current_game_number)
-#                         );"""
-#     try:
-#         crsr.execute(sql_command_create_table)
-#         conn.commit()
-#         print("Tables ensured to exist successfully.")
-#     except Exception as e:
-#         print(f"An error occurred while ensuring tables exist: {e}")
-#     finally:
-#         crsr.close()
-#         conn.close()
-# ensure_tables_exist()
+# Creating and managing the event loop manually for Python 3.6
+loop = asyncio.get_event_loop()
+try:
+    loop.run_until_complete(continuously_check_condition(api_url))
+finally:
+    loop.close()
 
