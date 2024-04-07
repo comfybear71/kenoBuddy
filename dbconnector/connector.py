@@ -2,6 +2,8 @@
 import MySQLdb
 import configparser
 
+
+
 class DatabaseConfig:
     def __init__(self, config_path):
         self.config_path = config_path

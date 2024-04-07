@@ -1,9 +1,11 @@
 import aiohttp
 import asyncio
+import random
 import configparser
 import json
 from dbconnector.connector import connect_to_database
 from dbconnector.timeutils import calculate_time_difference
+from dbconnector.telegramError import send_telegram_message
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -28,7 +30,7 @@ async def insert_into_db(data):
     if draw is not None:
         draw_json = json.dumps(list(draw))
     else:
-        print('WTF')
+        send_telegram_message('ACT - WTF')
     
     crsr.execute("SELECT COUNT(*) FROM act_draws")
     count = crsr.fetchone()[0]
@@ -56,11 +58,37 @@ async def insert_into_db(data):
         print(f"Game-number {current_game_number} already exists, skipping insertion.")
 
 
+async def call_api(url, max_retries=5, initial_delay=5):
+    retries = 0
+    delay = initial_delay
 
-async def call_api(url):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.json()
+        while retries < max_retries:
+            try:
+                
+                async with session.get(url) as response:
+                    # Ensure the response is JSON
+                    #if response.headers.get('Content-Type') == 'application/json':
+                    data = await response.json()
+                    
+                    if data is not None:  # Or any other validation of `data`
+                        send_telegram_message("ACT - Valid data")
+                        return data
+                    else:
+                        # If response is not JSON or data validation fails, prepare for retry
+                        raise ValueError("Invalid response")
+                    
+            except (aiohttp.ClientError, ValueError) as e:
+                print(f"Attempt {retries + 1}: {str(e)}")
+                if retries < max_retries - 1:
+                    # Wait with exponential backoff plus jitter
+                    await asyncio.sleep(delay + random.uniform(0, 2))
+                    delay *= 2
+                retries += 1
+        # All retries failed; handle accordingly
+        send_telegram_message("ACT - API did not return valid data after maximum retries.")
+        return None
+
 
 async def continuously_check_condition(api_url):
     while True:
@@ -69,9 +97,9 @@ async def continuously_check_condition(api_url):
         if data:
             await insert_into_db(data)
         
-        await asyncio.sleep(difference_in_seconds + 2)
+        await asyncio.sleep(difference_in_seconds + 5)
 
 
 api_url = 'https://api-info-act.keno.com.au/v2/games/kds?jurisdiction=ACT'
-asyncio.run(continuously_check_condition(api_url))
 
+asyncio.run(continuously_check_condition(api_url))

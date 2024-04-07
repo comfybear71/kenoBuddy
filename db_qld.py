@@ -1,12 +1,11 @@
-import MySQLdb
 import aiohttp
 import asyncio
-from datetime import datetime, timezone
+import random
 import configparser
 import json
-from dateutil import parser
 from dbconnector.connector import connect_to_database
 from dbconnector.timeutils import calculate_time_difference
+from dbconnector.telegramError import send_telegram_message
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -55,10 +54,37 @@ async def insert_into_db(data):
     else:
         print(f"Game-number {current_game_number} already exists, skipping insertion.")
 
-async def call_api(url):
+async def call_api(url, max_retries=5, initial_delay=5):
+    retries = 0
+    delay = initial_delay
+
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.json()
+        while retries < max_retries:
+            try:
+                
+                async with session.get(url) as response:
+                    # Ensure the response is JSON
+                    #if response.headers.get('Content-Type') == 'application/json':
+                    data = await response.json()
+                    
+                    if data is not None:  # Or any other validation of `data`
+                        print("Valid data")
+                        return data
+                    else:
+                        # If response is not JSON or data validation fails, prepare for retry
+                        raise ValueError("Invalid response")
+                    
+            except (aiohttp.ClientError, ValueError) as e:
+                print(f"Attempt {retries + 1}: {str(e)}")
+                if retries < max_retries - 1:
+                    # Wait with exponential backoff plus jitter
+                    await asyncio.sleep(delay + random.uniform(0, 2))
+                    delay *= 2
+                retries += 1
+        # All retries failed; handle accordingly
+        send_telegram_message(" QLD - API did not return valid data after maximum retries.")
+        return None
+            
 
 async def continuously_check_condition(api_url):
     while True:
