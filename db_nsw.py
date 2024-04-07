@@ -68,7 +68,7 @@ async def call_api(url, max_retries=5, initial_delay=5):
                     data = await response.json()
                     
                     if data is not None:  # Or any other validation of `data`
-                        print("Valid data")
+                        send_telegram_message("NSW - Valid data")
                         return data
                     else:
                         # If response is not JSON or data validation fails, prepare for retry

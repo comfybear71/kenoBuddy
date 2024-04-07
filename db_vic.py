@@ -32,7 +32,7 @@ async def insert_into_db(data):
     if draw is not None:
         draw_json = json.dumps(list(draw))
     else:
-        print('VIC - WTF')
+        send_telegram_message('VIC - WTF')
         
     
     crsr.execute("SELECT COUNT(*) FROM vic_draws")
@@ -72,7 +72,7 @@ async def call_api(url, max_retries=5, initial_delay=5):
                     data = await response.json()
                     
                     if data is not None:  # Or any other validation of `data`
-                        print("Valid data")
+                        send_telegram_message("VIC - Valid data")
                         return data
                     else:
                         # If response is not JSON or data validation fails, prepare for retry
