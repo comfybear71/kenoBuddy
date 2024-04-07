@@ -1,19 +1,17 @@
 import aiohttp
 import asyncio
 import random
-import configparser
 import json
-from dbconnector.connector import connect_to_database
 from dbconnector.timeutils import calculate_time_difference
+from dbconnector.connector import connect_to_database
 from dbconnector.telegramError import send_telegram_message
 
-config = configparser.ConfigParser()
-config.read('config.ini')
+
 difference_in_seconds = 0
 
 
 async def insert_into_db(data):
-    conn = connect_to_database('config.ini')
+    conn = connect_to_database()
     crsr = conn.cursor()
     record_inserted = False
     

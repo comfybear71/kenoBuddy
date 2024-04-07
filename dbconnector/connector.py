@@ -1,16 +1,11 @@
 # KENNOBUDDY/dbconnector/connector.py
 import MySQLdb
 import configparser
-
-
+import os
 
 class DatabaseConfig:
     def __init__(self, config_path):
-        self.config_path = config_path
-        self.hostname = None
-        self.username = None
-        self.password = None
-        self.database = None
+        self.config_path = os.path.join(os.path.dirname(__file__), 'config.ini')
         self.load_config()
 
     def load_config(self):

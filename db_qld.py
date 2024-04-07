@@ -1,25 +1,23 @@
 import aiohttp
 import asyncio
 import random
-import configparser
 import json
-from dbconnector.connector import connect_to_database
 from dbconnector.timeutils import calculate_time_difference
+from dbconnector.connector import connect_to_database
 from dbconnector.telegramError import send_telegram_message
 
-config = configparser.ConfigParser()
-config.read('config.ini')
+
 difference_in_seconds = 0
 
-
 async def insert_into_db(data):
-    conn = connect_to_database('config.ini')
+    conn = connect_to_database()
     crsr = conn.cursor()
-    record_inserted = False  # Default to False
+    record_inserted = False
     
     global difference_in_seconds
     
     difference_in_seconds = calculate_time_difference(data.get('selling', {}).get('closing'))
+    
     current_game_number = data.get('current', {}).get('game-number')
     draw = data.get('current', {}).get('draw')
     closed = data.get('current', {}).get('closed')
@@ -29,13 +27,15 @@ async def insert_into_db(data):
     if draw is not None:
         draw_json = json.dumps(list(draw))
     else:
-        print('WTF')
-        
+        send_telegram_message('QLD - WTF')
+    
     crsr.execute("SELECT COUNT(*) FROM qld_draws")
     count = crsr.fetchone()[0]
+    # DELETE THE OLDEST RECORD TO MAKE ROOM FOR NEW RECORD MAX:100
     if count >= 100:
         crsr.execute("DELETE FROM qld_draws ORDER BY current_closed LIMIT %s", (count - 99,))
 
+    #CHECK TO SEE IF GAME NUMBER EXISTS OR NOT, IF DONT EXIST THEN PROCEED
     crsr.execute("SELECT 1 FROM qld_draws WHERE current_game_number = %s LIMIT 1", (current_game_number,))
     
     if not crsr.fetchone():
@@ -53,6 +53,7 @@ async def insert_into_db(data):
         return record_inserted
     else:
         print(f"Game-number {current_game_number} already exists, skipping insertion.")
+
 
 async def call_api(url, max_retries=5, initial_delay=5):
     retries = 0
@@ -82,9 +83,9 @@ async def call_api(url, max_retries=5, initial_delay=5):
                     delay *= 2
                 retries += 1
         # All retries failed; handle accordingly
-        send_telegram_message(" QLD - API did not return valid data after maximum retries.")
+        send_telegram_message("QLD - API did not return valid data after maximum retries.")
         return None
-            
+
 
 async def continuously_check_condition(api_url):
     while True:
@@ -97,6 +98,5 @@ async def continuously_check_condition(api_url):
 
 
 api_url = 'https://api-info-qld.keno.com.au/v2/games/kds?jurisdiction=QLD'
+
 asyncio.run(continuously_check_condition(api_url))
-
-
