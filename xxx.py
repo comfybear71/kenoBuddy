@@ -2,8 +2,10 @@ from flask import Flask, jsonify, render_template, request, session, Response
 from datetime import datetime, timezone
 import numpy as np
 import json
-import configparser
-import MySQLdb
+import aiohttp
+import threading  # Make sure to import threading here
+import asyncio
+import random
 from dbconnector.timeutils import calculate_time_difference
 from dbconnector.connector import connect_to_database
 from dbconnector.telegramError import send_telegram_message
@@ -16,8 +18,48 @@ numOfGames = 10
 last_checked_id = 0
 difference_in_seconds = 0
 
-# config = configparser.ConfigParser()
-# config.read('config.ini')
+async def call_api(url, max_retries=5, initial_delay=5):
+    global difference_in_seconds
+    retries = 0
+    delay = initial_delay
+
+    async with aiohttp.ClientSession() as session:
+        while retries < max_retries:
+            try:
+                async with session.get(url) as response:
+                    data = await response.json()
+                    if data is not None:  # Or any other validation of `data`
+                        send_telegram_message("MAIN APP- Valid data")
+                        # Use calculate_time_difference from the imported module
+                        
+                        closing_time_str = data.get('selling', {}).get('closing')
+                        
+                        message = f'closing_time_str {closing_time_str}'
+                        send_telegram_message(message)
+                        
+                        difference_in_seconds = calculate_time_difference(closing_time_str)
+                        message = f'difference_in_seconds {difference_in_seconds}'
+                        send_telegram_message(message)
+                        
+                        return data
+                    else:
+                        raise ValueError("Invalid response")
+                    
+            except (aiohttp.ClientError, ValueError) as e:
+                print(f"Attempt {retries + 1}: {str(e)}")
+                if retries < max_retries - 1:
+                    await asyncio.sleep(delay + random.uniform(0, 2))
+                    delay *= 2
+                retries += 1
+        send_telegram_message("MAIN APP - API did not return valid data after maximum retries.")
+        return None
+
+
+async def continuously_check_condition(api_url):
+    while True:
+        data = await call_api(api_url)
+        
+        await asyncio.sleep(difference_in_seconds + 5)
 
 
 @app.route('/data', methods=['GET'])
@@ -144,7 +186,7 @@ def vic_view():
 
 @app.route('/fetch', methods=['GET', 'POST'])
 def proxy():
-    conn = connect_to_database('config.ini')
+    conn = connect_to_database()
     crsr = conn.cursor()
     
     if request.method == 'POST':
@@ -176,42 +218,23 @@ def proxy():
 
         return jsonify({"error": "Invalid request"}), 400
 
-
 def process_records(data, records):        
     
     for record in records:
         id, current_game_number, current_closed, draw, opened, closing = record
-        # print(f"Game ID: {id}")
-        # print(f"Game Number: {current_game_number}")
-        # print(f"Game Date: {current_closed}")
-        # print(f"Draw Numbers: {draw}")
-        # print(f"Opened: {opened}")
-        # print(f"Closing: {closing}")
-        # print("----------")
-    # print(data)
 
     draws, game_numbers, current_game_number, count_values, indices, hot_numbers, cold_numbers = game_data.returnData(records)
-    
     numbers_arrays = [num for num in range(1, 81)]
-    
-    global difference_in_seconds
-    
-    closing = records[0][5]
-    utc_now = datetime.now(timezone.utc)
-    utc_now_on_arbitrary_date = utc_now.replace(year=2000, month=1, day=1, microsecond=0)
-    closing_on_arbitrary_date = closing.replace(year=2000, month=1, day=1, microsecond=0)
-    utc_now_on_arbitrary_date_naive = utc_now_on_arbitrary_date.replace(tzinfo=None)
-    difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date_naive).total_seconds())
-    
-    send_telegram_message(difference_in_seconds)
     
     if difference_in_seconds < 0:
         sendError = "error"
-        difference_in_seconds = 120
+        message = f'FML: seconds {difference_in_seconds}'
+        send_telegram_message(message)
     else:
         sendError = ""
+        message = f'SUCK MY SALTY BALLS: seconds {difference_in_seconds}'
+        send_telegram_message(message)
 
-    
     responseData = {
         "originalData": data,
         "processedData": {
@@ -225,12 +248,13 @@ def process_records(data, records):
             "numbers_array": numbers_arrays,
             "opened": opened,
             "closing": closing,
-            "difference_in_seconds": difference_in_seconds + 5,
+            "difference_in_seconds": difference_in_seconds,
             "sendError": sendError
         }
     }
 
     return jsonify({"data": responseData})
+
 
 class GameData:
 
@@ -308,5 +332,20 @@ class GameData:
 
 game_data = GameData()
 
+
+
+# Function to run the asyncio loop in a separate thread
+def start_async_loop():
+    api_url = 'https://api-info-act.keno.com.au/v2/games/kds?jurisdiction=ACT'
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(continuously_check_condition(api_url))
+
 if __name__ == '__main__':
+    # Start the asyncio loop in a background thread
+    threading.Thread(target=start_async_loop, daemon=True).start()
+    # Start the Flask app
     app.run(host="0.0.0.0", debug=True, port=5000)
+
+
+

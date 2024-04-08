@@ -19,8 +19,6 @@ async def insert_into_db(data):
     
     current_game_number = data.get('current', {}).get('game-number')
     draw = data.get('current', {}).get('draw')
-    closed = data.get('current', {}).get('closed')
-    opened = data.get('selling', {}).get('opened')
     closing = data.get('selling', {}).get('closing')
     
     if draw is not None:
@@ -32,14 +30,14 @@ async def insert_into_db(data):
     count = crsr.fetchone()[0]
     # DELETE THE OLDEST RECORD TO MAKE ROOM FOR NEW RECORD MAX:100
     if count >= 100:
-        crsr.execute("DELETE FROM vic_draws ORDER BY current_closed LIMIT %s", (count - 99,))
+        crsr.execute("DELETE FROM vic_draws ORDER BY id LIMIT %s", (count - 99,))
 
     #CHECK TO SEE IF GAME NUMBER EXISTS OR NOT, IF DONT EXIST THEN PROCEED
     crsr.execute("SELECT 1 FROM vic_draws WHERE current_game_number = %s LIMIT 1", (current_game_number,))
     
     if not crsr.fetchone():
         try:
-            crsr.execute("INSERT INTO vic_draws(current_game_number, current_closed, draw, opened, closing) VALUES (%s, %s, %s, %s, %s)", (current_game_number, closed, draw_json, opened, closing,))
+            crsr.execute("INSERT INTO vic_draws(current_game_number, draw,  closing) VALUES (%s, %s, %s)", (current_game_number, draw_json, closing,))
             conn.commit()
             print("Record inserted successfully.")
             record_inserted = True 
@@ -63,19 +61,17 @@ async def call_api(url, max_retries=5, initial_delay=5):
             try:
                 
                 async with session.get(url) as response:
-                    # Ensure the response is JSON
-                    #if response.headers.get('Content-Type') == 'application/json':
+
                     data = await response.json()
                     
                     if data is not None:  # Or any other validation of `data`
-                        send_telegram_message("VIC - Valid data")
+                        # send_telegram_message("VIC - Valid data")
                         return data
                     else:
-                        # If response is not JSON or data validation fails, prepare for retry
                         raise ValueError("Invalid response")
                     
             except (aiohttp.ClientError, ValueError) as e:
-                print(f"Attempt {retries + 1}: {str(e)}")
+                send_telegram_message(f"Attempt {retries + 1}: {str(e)}")
                 if retries < max_retries - 1:
                     # Wait with exponential backoff plus jitter
                     await asyncio.sleep(delay + random.uniform(0, 2))
@@ -99,3 +95,6 @@ async def continuously_check_condition(api_url):
 api_url = 'https://api-info-vic.keno.com.au/v2/games/kds?jurisdiction=VIC'
 
 asyncio.run(continuously_check_condition(api_url))
+
+
+#ALTER TABLE act_draws DROP COLUMN current_closed, DROP COLUMN opened;

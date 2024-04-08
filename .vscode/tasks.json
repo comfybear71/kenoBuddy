@@ -1,0 +1,69 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run script DB ACT",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/db_act.py"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run script DB NSW",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/db_nsw.py"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run script DB QLD",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/db_qld.py"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run script DB VIC",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/db_vic.py"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}

@@ -3,27 +3,30 @@ from datetime import datetime, timezone
 from dateutil import parser
 
 def calculate_time_difference(closing):
-    # print(closing)
-    
     if closing is None:
         print("Closing time is not provided.")
         return None
-    else:
-        # Correctly parse the closing time string into a datetime object
+    # print('CLOSING: ', closing)
+    # Check if 'closing' is a string and parse it; otherwise, use it directly
+    if isinstance(closing, str):
         closing_datetime = parser.parse(closing)
-    
-    # Get the current UTC time as a datetime object
+        # print('IF closing_datetime', closing_datetime)
+    else:
+        closing_datetime = closing
+        # print('ELSE closing_datetime', closing_datetime)
+
+    # Ensure 'closing_datetime' is timezone-aware
+    if closing_datetime.tzinfo is None or closing_datetime.tzinfo.utcoffset(closing_datetime) is None:
+        closing_datetime = closing_datetime.replace(tzinfo=timezone.utc)
+
+    # The following code remains unchanged as you requested
     utc_now = datetime.now(timezone.utc)
     
-    # Normalize both times to the same arbitrary date for comparison
+    # print('UTC_NOW', utc_now)
     utc_now_on_arbitrary_date = utc_now.replace(year=2000, month=1, day=1, microsecond=0)
-    
-    # Use the parsed datetime object for replacement, not the string
     closing_on_arbitrary_date = closing_datetime.replace(year=2000, month=1, day=1, microsecond=0)
-
-    # Calculate the difference in seconds
     difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date).total_seconds())
-    
+
     return difference_in_seconds
 
 
