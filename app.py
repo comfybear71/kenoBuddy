@@ -2,8 +2,6 @@ from flask import Flask, jsonify, render_template, request, session, Response
 from datetime import datetime, timezone
 import numpy as np
 import json
-import configparser
-import MySQLdb
 from dbconnector.timeutils import calculate_time_difference
 from dbconnector.connector import connect_to_database
 from dbconnector.telegramError import send_telegram_message
@@ -15,9 +13,6 @@ jurisdiction = 'ACT'
 numOfGames = 10
 last_checked_id = 0
 difference_in_seconds = 0
-
-# config = configparser.ConfigParser()
-# config.read('config.ini')
 
 
 @app.route('/data', methods=['GET'])
@@ -118,6 +113,9 @@ def fetch_vic():
     else:
         return jsonify({"error": "Database connection failed."})
 
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -144,7 +142,7 @@ def vic_view():
 
 @app.route('/fetch', methods=['GET', 'POST'])
 def proxy():
-    conn = connect_to_database('config.ini')
+    conn = connect_to_database()
     crsr = conn.cursor()
     
     if request.method == 'POST':
@@ -180,15 +178,7 @@ def proxy():
 def process_records(data, records):        
     
     for record in records:
-        id, current_game_number, current_closed, draw, opened, closing = record
-        # print(f"Game ID: {id}")
-        # print(f"Game Number: {current_game_number}")
-        # print(f"Game Date: {current_closed}")
-        # print(f"Draw Numbers: {draw}")
-        # print(f"Opened: {opened}")
-        # print(f"Closing: {closing}")
-        # print("----------")
-    # print(data)
+        id, current_game_number, draw, closing = record
 
     draws, game_numbers, current_game_number, count_values, indices, hot_numbers, cold_numbers = game_data.returnData(records)
     
@@ -196,14 +186,14 @@ def process_records(data, records):
     
     global difference_in_seconds
     
-    closing = records[0][5]
+    closing = records[0][3]
     utc_now = datetime.now(timezone.utc)
     utc_now_on_arbitrary_date = utc_now.replace(year=2000, month=1, day=1, microsecond=0)
     closing_on_arbitrary_date = closing.replace(year=2000, month=1, day=1, microsecond=0)
     utc_now_on_arbitrary_date_naive = utc_now_on_arbitrary_date.replace(tzinfo=None)
     difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date_naive).total_seconds())
     
-    send_telegram_message(difference_in_seconds)
+    # send_telegram_message(difference_in_seconds)
     
     if difference_in_seconds < 0:
         sendError = "error"
@@ -223,7 +213,6 @@ def process_records(data, records):
             "hot_numbers": hot_numbers,
             "cold_numbers": cold_numbers,
             "numbers_array": numbers_arrays,
-            "opened": opened,
             "closing": closing,
             "difference_in_seconds": difference_in_seconds + 5,
             "sendError": sendError
@@ -239,7 +228,7 @@ class GameData:
         # Convert records to a list of dictionaries for JSON serialization
         processed_records = [{
             "current_game_number": rec[1],
-            "draw": json.loads(rec[3])  # Assuming rec[3] is a JSON string representing a list
+            "draw": json.loads(rec[2])  # Assuming rec[3] is a JSON string representing a list
         } for rec in records]  
         
         # Extract the draw numbers from the processed records

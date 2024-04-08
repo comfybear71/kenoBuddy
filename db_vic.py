@@ -86,10 +86,11 @@ async def continuously_check_condition(api_url):
     while True:
         data = await call_api(api_url)
         
-        if data:
+        if data is not None:
             await insert_into_db(data)
-        
-        await asyncio.sleep(difference_in_seconds + 5)
+            await asyncio.sleep(difference_in_seconds + 5)
+        else:
+            await asyncio.sleep(300)
 
 
 api_url = 'https://api-info-vic.keno.com.au/v2/games/kds?jurisdiction=VIC'

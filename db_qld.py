@@ -70,7 +70,7 @@ async def call_api(url, max_retries=5, initial_delay=5):
                         raise ValueError("Invalid response")
                     
             except (aiohttp.ClientError, ValueError) as e:
-                print(f"Attempt {retries + 1}: {str(e)}")
+                send_telegram_message(f"Attempt {retries + 1}: {str(e)}")
                 if retries < max_retries - 1:
                     await asyncio.sleep(delay + random.uniform(0, 2))
                     delay *= 2
@@ -83,10 +83,11 @@ async def continuously_check_condition(api_url):
     while True:
         data = await call_api(api_url)
         
-        if data:
+        if data is not None:
             await insert_into_db(data)
-        
-        await asyncio.sleep(difference_in_seconds + 5)
+            await asyncio.sleep(difference_in_seconds + 5)
+        else:
+            await asyncio.sleep(300)
 
 
 api_url = 'https://api-info-qld.keno.com.au/v2/games/kds?jurisdiction=QLD'
