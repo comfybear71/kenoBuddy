@@ -49,9 +49,11 @@
         jQuery(document).ready(function($) {
             $.getJSON('/act', function(response) {
                 // Get the last 6 games (to exclude the very last one), then reverse and take the first 5
-                let gamesToShow = response.data.slice(-6).reverse().slice(1);
+                let gamesToShow = response.data.slice(-5).reverse().slice(1);
                 //let gamesToShow = response.data.slice(-5).reverse();
             
+                console.log(gamesToShow)
+
                 gamesToShow.forEach(gameEntry => {
                     // Define an array of category names to process
                     const categories = ['filtered', 'taps', 'picks', 'grabs', 'plucker'];
@@ -72,7 +74,6 @@
                             hitsCount: hitsArray.length,
                             numbers: numbersArray.join(", "),
                             possibleCombinations: gameEntry[`${category}_comb`],
-                            strikeRatePercent: ((hitsArray.length / numbersArray.length) * 100).toFixed(2)
                         };
             
                         // Create the card for the current category and append it to the game container
@@ -109,18 +110,17 @@
                     hits: parseToArray(gameEntry[dataType + '_numbers']).join(", "),
                     hitsCount: parseToArray(gameEntry[dataType + '_numbers']).length,
                     numbers: parseToArray(gameEntry[dataType]).join(", "),
-                    possibleCombinations: gameEntry[dataType + '_comb']
+                    possibleCombinations: gameEntry[dataType + '_comb'],
                 };
         
-                data.strikeRatePercent = ((data.hitsCount / parseToArray(gameEntry[dataType]).length) * 100).toFixed(2);
-
                 document.getElementById(dataType + 'Container').innerHTML += createCardContent(data);
             });
         }
 
         function createCardContent(data, index) {
+            let numbersArray = data.numbers.split(", ");
+            let strikeRatePercent = Math.floor((data.hitsCount / numbersArray.length) * 100);
 
-            let strikeRatePercent = data.strikeRatePercent;
             let greenBlocks = Math.ceil(data.hitsCount / 2);
             let redBlocks = Math.ceil((25 - data.hitsCount) / 2);
             let indicators = '🟩'.repeat(greenBlocks) + '🟥'.repeat(redBlocks);

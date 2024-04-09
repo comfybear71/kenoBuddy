@@ -539,8 +539,10 @@ function handleButtonClick(event) {
         } 
 
         if (notNullValue !== null) {
-            let message = `${resultGame.length} from ${newResult.length} for game ${prevNumber}. Picked ${resultGame}`;
+            let strikeRatePercent = ((resultGame.length / prevResult.length) * 100);
+            let roundDownNumber = Math.floor(strikeRatePercent * 100) / 100;
 
+            let message = `${resultGame.length} from ${newResult.length} for game ${prevNumber}. Picked ${resultGame}  => ${roundDownNumber}%`;
             caption1.innerHTML = message;
         }
     })

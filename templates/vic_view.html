@@ -71,7 +71,6 @@
                             hitsCount: hitsArray.length,
                             numbers: numbersArray.join(", "),
                             possibleCombinations: gameEntry[`${category}_comb`],
-                            strikeRatePercent: ((hitsArray.length / numbersArray.length) * 100).toFixed(2)
                         };
             
                         // Create the card for the current category and append it to the game container
@@ -111,16 +110,13 @@
                     possibleCombinations: gameEntry[dataType + '_comb']
                 };
         
-                // Calculate the strike rate percentage
-                data.strikeRatePercent = ((data.hitsCount / parseToArray(gameEntry[dataType]).length) * 100).toFixed(2);
-        
-                // Assuming you have a specific container for each type
                 document.getElementById(dataType + 'Container').innerHTML += createCardContent(data);
             });
         }
 
         function createCardContent(data, index) {
-            let strikeRatePercent = data.strikeRatePercent;
+            let numbersArray = data.numbers.split(", ");
+            let strikeRatePercent = Math.floor((data.hitsCount / numbersArray.length) * 100);
             let greenBlocks = Math.ceil(data.hitsCount / 2);
             let redBlocks = Math.ceil((25 - data.hitsCount) / 2);
             let indicators = '🟩'.repeat(greenBlocks) + '🟥'.repeat(redBlocks);
