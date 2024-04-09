@@ -174,6 +174,84 @@ def proxy():
 
         return jsonify({"error": "Invalid request"}), 400
 
+@app.route('/get-previous-game-result', methods=['GET', 'POST'])
+def get_previous_game_results():
+    conn = connect_to_database()
+    crsr = conn.cursor()
+    print('made it')
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        jurisdiction = data.get('jurisdiction')
+        
+        if conn:
+            table_name = ""
+            if jurisdiction == 'ACT':
+                table_name = "act_draws"
+            elif jurisdiction == 'QLD':
+                table_name = "qld_draws"
+            elif jurisdiction == 'NSW':
+                table_name = "nsw_draws"
+            elif jurisdiction == 'VIC':
+                table_name = "vic_draws"
+                
+            if table_name:
+                query = f"SELECT draw, current_game_number FROM {table_name} ORDER BY id DESC LIMIT 1,1"
+            try:
+                crsr.execute(query)
+                result = crsr.fetchall()
+                if result:
+                    return jsonify(result)
+                else:
+                    return jsonify({'error': True, 'message': 'No Previous Draw yet, please wait for next draw.'})
+            except Exception as e:
+                return jsonify({'error': True, 'message': str(e)})
+            finally:
+                crsr.close()
+                conn.close()
+
+@app.route('/strats', methods=['GET', 'POST'])
+def strats():
+    conn = connect_to_database()
+    crsr = conn.cursor()
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        jurisdiction = data.get('jurisdiction')
+        name = data.get('name')
+        result_str = "{}_{}".format(name, 'numbers')
+        comb_str = "{}_{}".format(name, 'comb')
+        
+        if conn:
+            table_name = ""
+            if jurisdiction == 'ACT':
+                table_name = "act_numbers"
+            elif jurisdiction == 'QLD':
+                table_name = "qld_numbers"
+            elif jurisdiction == 'NSW':
+                table_name = "nsw_numbers"
+            elif jurisdiction == 'VIC':
+                table_name = "vic_numbers"
+                
+            if table_name:
+                # For the newest record
+                query_newest_record = f"SELECT {name}, NULL as {result_str}, NULL as {comb_str}, game_number, current_draw_num FROM {table_name} ORDER BY id DESC LIMIT 1"
+                # For the second-to-last record
+                query_second_last_record = f"SELECT {name}, {result_str}, {comb_str}, game_number, current_draw_num FROM {table_name} ORDER BY id DESC LIMIT 1 OFFSET 1"
+                # Combine the two queries with UNION ALL
+                combined_query = f"({query_newest_record}) UNION ALL ({query_second_last_record})"
+            try:
+                crsr.execute(combined_query)
+                result = crsr.fetchall()
+                if result:
+                    return jsonify(result)
+                else:
+                    return jsonify({'error': True, 'message': str(e)})
+            except Exception as e:
+                return jsonify({'error': True, 'message': str(e)})
+            finally:
+                crsr.close()
+                conn.close()
 
 def process_records(data, records):        
     

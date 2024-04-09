@@ -120,7 +120,7 @@
         }
 
         function createCardContent(data, index) {
-            let strikeRatePercent = ((data.hitsCount / 25) * 100).toFixed(2);
+            let strikeRatePercent = data.strikeRatePercent;
             let greenBlocks = Math.ceil(data.hitsCount / 2);
             let redBlocks = Math.ceil((25 - data.hitsCount) / 2);
             let indicators = '🟩'.repeat(greenBlocks) + '🟥'.repeat(redBlocks);
