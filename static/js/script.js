@@ -9,6 +9,15 @@ let globalNumbers_array = []
 
 
 
+addChangeListener('jurisdiction', onJurisdictionChange);
+addChangeListener('numOfGames', onNumOfGamesChange);
+var chances= document.getElementById("chances");
+var clear = document.getElementById("clear");
+var draw = document.getElementById("draw");
+var previous = document.getElementById("previous");
+var plucker = document.getElementById("plucker");
+
+
 function addChangeListener(elementId, callback) {
     const element = document.getElementById(elementId);
     element.addEventListener('change', callback);
@@ -22,9 +31,6 @@ const appState = {
         return document.getElementById('numOfGames').value;
     }
 };
-
-addChangeListener('jurisdiction', onJurisdictionChange);
-addChangeListener('numOfGames', onNumOfGamesChange);
 
 function fetchDataAndUpdateDOM() {
     if (isFetching) return;
@@ -99,7 +105,6 @@ function fetchDataAndUpdateDOM() {
         });
 }
 
-///////////////////////////////////////////////////////////
 function onJurisdictionChange() {
     console.log('Jurisdiction changed to: ', document.getElementById('jurisdiction').value);
     const selectedJurisdiction = this.value;
@@ -329,8 +334,6 @@ function revertStyles() {
     }
 }
 
-
-
 function hotNumber(hotNumbers){
 
     if (Array.isArray(hotNumbers)) {
@@ -362,12 +365,6 @@ function coldNumber(coldNumbers){
     }
 }
 
-var chances= document.getElementById("chances");
-var clear = document.getElementById("clear");
-var draw = document.getElementById("draw");
-var previous = document.getElementById("previous");
-var plucker = document.getElementById("plucker");
-
 clear.addEventListener("click", function() {
     currentIndex = 0;
     revertStyles();
@@ -384,18 +381,24 @@ draw.addEventListener("click", function() {
     runMain(globalCurrentDraw, currentIndex, globalCurrentDraw.length);
 });
 
-chances.addEventListener("click", function() {
-    currentIndex = 0;
-    revertStyles();
-
-    let message1 = 'Take your Chance';
-    caption.innerHTML = message1
-    caption1.innerHTML = message1
-    const randomNumbers = generateUniqueRandomNumbers(20, 80);
-    runMain(randomNumbers, 0, randomNumbers.length);
-  
-    
+const twoButtons = ['chances', 'random'];
+twoButtons.forEach(buttonId => {
+    document.getElementById(buttonId).addEventListener('click', handleTwoButtonClick);
 });
+
+function handleTwoButtonClick(event){
+    const buttonName = event.target.id;
+
+    if (buttonName === 'random' || buttonName === 'chances') {
+        currentIndex = 0;
+        revertStyles();
+        let message1 = 'Random/Chances Draw';
+        caption.innerHTML = message1
+        caption1.innerHTML = message1
+        const randomNumbers = generateUniqueRandomNumbers(20, 80);
+        runMain(randomNumbers, 0, randomNumbers.length);
+    }
+}
 
 function generateUniqueRandomNumbers(count, max) {
     const numbers = new Set();
@@ -405,7 +408,6 @@ function generateUniqueRandomNumbers(count, max) {
     }
     return [...numbers];
 }
-
 
 previous.addEventListener("click", function() {
     
@@ -443,16 +445,13 @@ previous.addEventListener("click", function() {
 });
 
 
-
-
-
 const buttons = ['taps', 'plucker', 'grabs', 'picks', 'filtered'];
 buttons.forEach(buttonId => {
     document.getElementById(buttonId).addEventListener('click', handleButtonClick);
 });
 
 function handleButtonClick(event) {
-    const buttonName = event.target.id; // This gets the id of the clicked button, which you've set to the name
+    const buttonName = event.target.id; 
     
     const requestBody = {
         jurisdiction: appState.jurisdiction,
@@ -517,172 +516,82 @@ function handleButtonClick(event) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function crazy_numbers(current_game_number, indices, numbers_array) {
-
-    crazy_number_dict = {}
+    let crazy_number_dict = {};
 
     for (let i = 0; i < numbers_array.length; i++) {
-
         let idx = indices[i][0];
+        let conditionMet = (idx > 10) || (idx === 'm');
 
-        if (idx > 10 && idx <= 20) {
+        if (conditionMet) {
+            let indexValue = idx === 'm' ? document.getElementById('numOfGames').value : idx;
             crazy_number_dict[i + 1] = {
                 'number': numbers_array[i],
                 'game_number': current_game_number,
-                'index': idx
-            };
-        } else if (idx > 20 && idx <= 25) {
-            crazy_number_dict[i + 1] = {
-                'number': numbers_array[i],
-                'game_number': current_game_number,
-                'index': idx
-            };
-        } else if (idx > 25 && idx <= 30) {
-            crazy_number_dict[i + 1] = {
-                'number': numbers_array[i],
-                'game_number': current_game_number,
-                'index': idx
-            };
-        } else if (idx > 30) {
-            crazy_number_dict[i + 1] = {
-                'number': numbers_array[i],
-                'game_number': current_game_number,
-                'index': idx
-            };
-        } else if (indices[i][0] === 'm') {
-            crazy_number_dict[i + 1] = {
-                'number': numbers_array[i],
-                'game_number': current_game_number,
-                'index': document.getElementById('numOfGames').value
+                'index': indexValue
             };
         }
     }
     createCrazyNumberDivs(crazy_number_dict);
 }
 
-// Base function to create items for each category (PICK, CRAZY, INSANE)
-function createPickItem(number, index) {
+function createItem(number, index, type) {
     const item = document.createElement('div');
-    item.className = 'pick-item';
+    item.className = `${type}-item`;
 
-    // Top text for the number
     const topText = document.createElement('div');
     topText.className = 'top-text';
     topText.textContent = number;
     item.appendChild(topText);
 
-    // Bottom text for the index
     const bottomText = document.createElement('div');
     bottomText.className = 'bottom-text';
-    bottomText.textContent = index + ' ago';
+    bottomText.textContent =  + index + ' games ago';
     item.appendChild(bottomText);
 
     return item;
 }
 
-function createCrazyItem(number, index) {
-    const item = document.createElement('div');
-    item.className = 'crazy-item';
-
-    // Top text for the number
-    const topText = document.createElement('div');
-    topText.className = 'top-text';
-    topText.textContent = number;
-    item.appendChild(topText);
-
-    // Bottom text for the index
-    const bottomText = document.createElement('div');
-    bottomText.className = 'bottom-text';
-    bottomText.textContent = index + ' ago';
-    item.appendChild(bottomText);
-
-    return item;
-}
-
-function createInsaneItem(number, index) {
-    const item = document.createElement('div');
-    item.className = 'insane-item';
-
-    // Top text for the number
-    const topText = document.createElement('div');
-    topText.className = 'top-text';
-    topText.textContent = number;
-    item.appendChild(topText);
-
-    // Bottom text for the index
-    const bottomText = document.createElement('div');
-    bottomText.className = 'bottom-text';
-    bottomText.textContent = index + ' ago';
-    item.appendChild(bottomText);
-
-    return item;
-}
-
-// Function to dynamically create the crazy numbers display
 function createCrazyNumberDivs(crazyNumberDict) {
-    const itemCraziesContainer = document.getElementById('dynamicContent');
+    const pickColumn = document.getElementById('pickColumn') || createCategoryColumn('pick');
+    const crazyColumn = document.getElementById('crazyColumn') || createCategoryColumn('crazy');
+    const insaneColumn = document.getElementById('insaneColumn') || createCategoryColumn('insane');
+
     // Clear the container to ensure we're not duplicating elements
-    itemCraziesContainer.innerHTML = '';
+    pickColumn.innerHTML = '';
+    crazyColumn.innerHTML = '';
+    insaneColumn.innerHTML = '';
 
-    // Create rows for PICK, CRAZY, and INSANE categories
-    const pickRow = document.createElement('div');
-    pickRow.className = 'pick-row';
-    const crazyRow = document.createElement('div');
-    crazyRow.className = 'crazy-row';
-    const insaneRow = document.createElement('div');
-    insaneRow.className = 'insane-row';
+    // Append labels
+    pickColumn.appendChild(createPickMessage('PICK'));
+    crazyColumn.appendChild(createCrazyMessage('CRAZY'));
+    insaneColumn.appendChild(createInsaneMessage('INSANE'));
 
-    // Flags to track if any item was added to a category
-    let hasPick = false, hasCrazy = false, hasInsane = false;
-
-    // Populate rows based on the crazy number dictionary data
+    // Populate columns based on the crazy number dictionary data
     for (const [key, value] of Object.entries(crazyNumberDict)) {
-        
-        
+        let type;
         if (value.index >= 10 && value.index < 15) {
-            const item = createPickItem(value.number, value.index);
-            pickRow.appendChild(item);
-            hasPick = true;
+            type = 'pick';
         } else if (value.index >= 15 && value.index < 20) {
-            const item = createCrazyItem(value.number, value.index);
-            crazyRow.appendChild(item);
-            hasCrazy = true;
+            type = 'crazy';
         } else if (value.index >= 20) {
-            const item = createInsaneItem(value.number, value.index);
-            insaneRow.appendChild(item);
-            hasInsane = true;
+            type = 'insane';
+        }
+
+        if (type) {
+            const item = createItem(value.number, value.index, type);
+            if (type === 'pick') pickColumn.appendChild(item);
+            else if (type === 'crazy') crazyColumn.appendChild(item);
+            else if (type === 'insane') insaneColumn.appendChild(item);
         }
     }
+}
 
-    // Append default message if a row is empty
-    if (!hasPick || hasPick) pickRow.prepend(createPickMessage('PICK'));
-    if (!hasCrazy || hasCrazy) crazyRow.prepend(createCrazyMessage('CRAZY'));
-    if (!hasInsane || hasInsane) insaneRow.prepend(createInsaneMessage('INSANE'));
-
-    // Append rows to the container
-    itemCraziesContainer.appendChild(pickRow);
-    itemCraziesContainer.appendChild(crazyRow);
-    itemCraziesContainer.appendChild(insaneRow);
+function createCategoryColumn(type) {
+    const column = document.createElement('div');
+    column.id = `${type}Column`;
+    column.className = 'category-column';
+    return column;
 }
 
 // Helper function to create a default message item
@@ -708,6 +617,25 @@ function createInsaneMessage(message) {
     defaultMessage.textContent = message;
     return defaultMessage;
 }
+
+function appendItemsToColumn() {
+    // Obtain references to each column
+    const pickColumn = document.getElementById('pickColumn');
+    const crazyColumn = document.getElementById('crazyColumn');
+    const insaneColumn = document.getElementById('insaneColumn');
+
+    // Append items to the correct column
+    pickColumn.appendChild(createPickMessage('PICK')); // Assuming this creates a header or label
+  
+    crazyColumn.appendChild(createCrazyMessage('CRAZY')); // Assuming this creates a header or label
+ 
+    insaneColumn.appendChild(createInsaneMessage('INSANE')); // Assuming this creates a header or label
+    
+}
+
+// Call the function to append items
+appendItemsToColumn();
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // Restore the selected options from localStorage
