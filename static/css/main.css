@@ -65,7 +65,7 @@ body {
 
     .item-strats {
         display: grid;
-        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr 1fr;
         margin-bottom: 2px;
         /* Adjust the bottom margin */

@@ -5,39 +5,9 @@ var currentIndex = 0;
 let globalCurrentDraw = [];
 let globalGameNumber = [];
 let globalCurrentGameNumber = [];
-let globalPreviousGameNumber= [];
-let globalNumbers_array = [];
-let previous_results = [[], []];
-let globalPreviousDraw = [];
-let globalMatchingNumbers1 = [];
-let globalMatchingNumbers2 = [];
-let globalMatchingNumbers3 = [];
-let globalMatchingNumbers4 = [];
-let globalRemainingNumbersList = [];
-let oddNumbersList = [];
-let evenNumbersList = [];
-let headNumbersList = [];
-let tailNumbersList = [];
-let sample_test1 = [];
-let sample_test2 = [];
-let sample_test3 = [];
-let sample_test4 = [];
-let sample_test5 = [];
-let sample_test6 = [];
-let sample_test7 = [];
-let sample_test8 = [];
-let sample_test9 = [];
-let previous_plucker = [[], []];
-let previous_picks = [[], []];
-let previous_selects = [[], []];
-let previous_taps = [[], []];
-let previous_digs = [[], []];
-let previous_grabs = [[], []];
-let previous_snags = [[], []];
-let previous_wagers = [[], []];
-let previous_stakes = [[], []];
+let globalNumbers_array = []
 
-const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
 
 function addChangeListener(elementId, callback) {
     const element = document.getElementById(elementId);
@@ -195,17 +165,11 @@ function updateDOMWithGameData(processedData, firstFiveElementsFromEach, count_v
     
     updateBoard(firstFiveElementsFromEach, count_values);
     runMain(current_draw, currentIndex, current_draw.length);
-    // updateGameResults(current_draw);
-    crazy_numbers(globalCurrentGameNumber, processedData.indices, globalNumbers_array);
+    crazy_numbers(processedData.draws, processedData.indices, globalNumbers_array);
     hotNumber(processedData.hot_numbers);
     coldNumber(processedData.cold_numbers);
-    // sampleTest(processedData.indices)
+
     globalPreviousGameNumber = processedData.previous_game_number;
-
-    if (globalPreviousDraw.length != 0) {
-        remainingData(processedData.indices, globalPreviousDraw);
-    } 
-
     let message1 = 'Latest Game No. ' + globalGameNumber;
     caption.innerHTML = message1
     caption1.innerHTML = message1
@@ -423,21 +387,24 @@ draw.addEventListener("click", function() {
 chances.addEventListener("click", function() {
     currentIndex = 0;
     revertStyles();
-   
-    if(globalRemainingNumbersList != 0){
-        let message1 = 'Take your Chance';
-        caption.innerHTML = message1
-        caption1.innerHTML = message1
-        runMain(globalRemainingNumbersList, currentIndex, globalRemainingNumbersList.length);
-    } else {
-        let message1 = 'Waiting for next Game!!';
-        caption.innerHTML = message1
-        caption1.innerHTML = message1
-    }
+
+    let message1 = 'Take your Chance';
+    caption.innerHTML = message1
+    caption1.innerHTML = message1
+    const randomNumbers = generateUniqueRandomNumbers(20, 80);
+    runMain(randomNumbers, 0, randomNumbers.length);
+  
     
 });
 
-
+function generateUniqueRandomNumbers(count, max) {
+    const numbers = new Set();
+    while (numbers.size < count) {
+        const randomNumber = Math.floor(Math.random() * max) + 1;
+        numbers.add(randomNumber);
+    }
+    return [...numbers];
+}
 
 
 previous.addEventListener("click", function() {
@@ -479,7 +446,6 @@ previous.addEventListener("click", function() {
 
 
 
-// Add the event listener to each button
 const buttons = ['taps', 'plucker', 'grabs', 'picks', 'filtered'];
 buttons.forEach(buttonId => {
     document.getElementById(buttonId).addEventListener('click', handleButtonClick);
@@ -755,320 +721,5 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('numOfGames').value = savedNumOfGames;
     }
 
-    // After restoring selections, now you can fetch data and update DOM
     fetchDataAndUpdateDOM();
 });
-
-
-
-
-
-
-
-
-// function remainingData(indices, previousResult) {
-
-//     let allNumbersSet = new Set(Array.from({ length: 80 }, (_, i) => i + 1));
-//     let numbersArray = Array.from(allNumbersSet);
-    
-//     indices.forEach((index, i) => {
-//         // Matching number drawn out 2 games in a row
-//         if (index[0] === 1 && index[1] === 2) {
-//             globalMatchingNumbers1.push(numbersArray[i]);
-//         }
-//         // Matching number drawn out 3 games in a row
-//         if (index[0] === 1 && index[1] === 2 && index[2] === 3) {
-//             globalMatchingNumbers2.push(numbersArray[i]);
-//         }
-//         // Matching Numbers drawn more than 4 games ago but less than 8
-//         if (index[0] >= 3 && index[0] <= 9) {
-//             globalMatchingNumbers3.push(numbersArray[i]);
-//         }
-//         // Matching Numbers drawn more than 8 games ago
-//         if (index[0] >= 8) {
-//             globalMatchingNumbers4.push(numbersArray[i]);
-//         }
-//     });
-
-//     let matchingSet1 = new Set(globalMatchingNumbers1);
-//     let matchingSet2 = new Set(globalMatchingNumbers2);
-//     let matchingSet3 = new Set(globalMatchingNumbers3);
-//     let matchingSet4 = new Set(globalMatchingNumbers4);
-//     let matchingSet5 = new Set(globalCurrentDraw);
-
-//     // Calculate the remaining numbers set
-//     let remainingNumbersSet = new Set([...allNumbersSet].filter(x => !matchingSet1.has(x) && !matchingSet2.has(x) && !matchingSet3.has(x) && !matchingSet4.has(x) && !matchingSet5.has(x)));
-    
-//     //clear globals
-//     globalMatchingNumbers1.length = 0;
-//     globalMatchingNumbers2.length = 0;
-//     globalMatchingNumbers3.length = 0;
-//     globalMatchingNumbers4.length = 0;
-//     globalRemainingNumbersList.length = 0;
-//     globalRemainingNumbersList.push(...remainingNumbersSet);
-
-//     oddNumbersList = globalRemainingNumbersList.filter(x => x % 2 !== 0);
-//     evenNumbersList = globalRemainingNumbersList.filter(x => x % 2 === 0);
-//     headNumbersList = globalRemainingNumbersList.filter(x => x <= 40);
-//     tailNumbersList = globalRemainingNumbersList.filter(x => x > 40);
-// }
-
-// function sampleTest(indices) {
-//     sample_test1 = [];
-//     sample_test2 = [];
-//     sample_test3 = [];
-//     sample_test4 = [];
-//     sample_test5 = [];
-//     sample_test6 = [];
-//     sample_test7 = [];
-//     sample_test8 = [];
-//     sample_test9 = [];
-//     // Object to store results
-//     let resultsDict = {};
-
-
-//     indices.forEach((sublist, i) => {
-//         // Check if the sublist is not an array or if it contains placeholder 'm'
-//         if (!Array.isArray(sublist) || sublist.includes('m')) {
-//             console.error(`Item at index ${i+1} is not a valid array or contains placeholder 'm'`);
-//             // Handle the case where sublist is not as expected
-//             // For example, you can assign default values or skip processing this sublist
-//             resultsDict[i + 1] = {
-//                 indices: 0, // Assuming default values
-//                 smallest: null,
-//                 largest: null,
-//                 sum: 0,
-//                 secondElement: null,
-//                 thirdElement: null,
-//                 fourthElement: null
-//             };
-//             return; // Skip further processing for this item
-//         }
-    
-//         // If sublist is a valid array, proceed with calculations
-//         let sublistSum = sublist.reduce((a, b) => a + b, 0);
-//         let smallest = Math.min(...sublist);
-//         let largest = Math.max(...sublist);
-//         let secondElement = sublist.length >= 2 ? sublist[1] : null;
-//         let thirdElement = sublist.length >= 3 ? sublist[2] : null;
-//         let fourthElement = sublist.length >= 4 ? sublist[3] : null;
-    
-//         resultsDict[i + 1] = {
-//             indices: sublist.length,
-//             smallest: smallest,
-//             largest: largest,
-//             sum: sublistSum,
-//             secondElement: secondElement,
-//             thirdElement: thirdElement,
-//             fourthElement: fourthElement
-//         };
-//     });
-
-//     // Processing the conditions similar to the Python function
-//     Object.entries(resultsDict).forEach(([number, info]) => {
-//         if (info.sum > 200 && info.sum < 300 && info.secondElement < 10) sample_test1.push(Number(number));
-//         if (info.sum > 300 && info.sum < 400 && info.secondElement < 10) sample_test2.push(Number(number));
-//         if (info.sum > 400 && info.sum < 500 && info.secondElement < 10) sample_test3.push(Number(number));
-//         if (info.secondElement < 5) sample_test4.push(Number(number));
-//         if (info.thirdElement < 8) sample_test5.push(Number(number));
-//         if (info.fourthElement < 10) sample_test6.push(Number(number));
-//         if (info.indices >= 13) sample_test7.push(Number(number));
-//         if (info.indices >= 15) sample_test8.push(Number(number));
-//         if (info.indices > 10 && info.indices < 15) sample_test9.push(Number(number));
-//     });
-
-//     updatePreviousPlucker(sample_test1);
-//     updatePreviousPicks(sample_test2);
-//     updatePreviousSelects(sample_test3);
-//     updatePreviousTaps(sample_test4);
-//     updatePreviousDigs(sample_test5);
-//     updatePreviousGrabs(sample_test6);
-//     updatePreviousSnags(sample_test7);
-//     updatePreviousWagers(sample_test8);
-//     updatePreviousStakes(sample_test9);
-// }
-// function updateGameResults(newResult) {
-//     previous_results[1] = previous_results[0];
-//     previous_results[0] = newResult;
-//     globalPreviousDraw = previous_results[1];
-// }
-// function updatePreviousPlucker(newResult) {
-//     previous_plucker[1] = previous_plucker[0];
-//     previous_plucker[0] = newResult;
-//     return previous_plucker;
-// }
-// function updatePreviousPicks(newResult) {
-//     previous_picks[1] = previous_picks[0];
-//     previous_picks[0] = newResult;
-//     return previous_picks;
-// }
-// function updatePreviousSelects(newResult) {
-//     previous_selects[1] = previous_selects[0];
-//     previous_selects[0] = newResult;
-//     return previous_selects;
-// }
-// function updatePreviousTaps(newResult) {
-//     previous_taps[1] = previous_taps[0];
-//     previous_taps[0] = newResult;
-//     return previous_taps;
-// }
-// function updatePreviousDigs(newResult) {
-//     previous_digs[1] = previous_digs[0];
-//     previous_digs[0] = newResult;
-//     return previous_digs;
-// }
-// function updatePreviousGrabs(newResult) {
-//     previous_grabs[1] = previous_grabs[0];
-//     previous_grabs[0] = newResult;
-//     return previous_grabs;
-// }
-// function updatePreviousSnags(newResult) {
-//     previous_snags[1] = previous_snags[0];
-//     previous_snags[0] = newResult;
-//     return previous_snags;
-// }
-// function updatePreviousWagers(newResult) {
-//     previous_wagers[1] = previous_wagers[0];
-//     previous_wagers[0] = newResult;
-//     return previous_wagers;
-// }
-// function updatePreviousStakes(newResult) {
-//     previous_stakes[1] = previous_stakes[0];
-//     previous_stakes[0] = newResult;
-//     return previous_stakes;
-// }
-
-
-//////////CONTROL BUTTONS FOR PREV, DRAW, CHANCES, CLEAR, TAILS, HEADS, EVENS, ODDS/////////////////
-// function toggleSwitch(btnNumber) {
-//     const button = document.getElementById(`switch-btn${btnNumber}`);
-//     button.classList.toggle('active');
-    
-//     // Get all active buttons
-//     const activeButtons = document.querySelectorAll('.switch-container button.active');
-//     if (activeButtons.length > 0) {
-//         // Reset currentIndex, stopRunFirstFunction(), and revertStyles()
-//         currentIndex = 0;
-//         revertStyles();
-        
-//         // Iterate over all active buttons
-//         activeButtons.forEach(activeButton => {
-//             // Get the corresponding array and call runInfo
-//             switch (activeButton.id) {
-//                 case 'switch-btn1':
-//                     //runInfo(tail_number_list, currentIndex, tail_number_list.length);
-//                     runMain(tailNumbersList, currentIndex, tailNumbersList.length);
-//                     break;
-//                 case 'switch-btn2':
-//                     //runInfo(head_number_list, currentIndex, head_number_list.length);
-//                     runMain(headNumbersList, currentIndex, headNumbersList.length); 
-//                     break;
-//                 case 'switch-btn3':
-//                    // runInfo(even_numbers_list, currentIndex, even_numbers_list.length);
-//                     runMain(evenNumbersList, currentIndex, evenNumbersList.length);
-//                     break;
-//                 case 'switch-btn4':
-//                    // runInfo(odd_numbers_list, currentIndex, odd_numbers_list.length);
-//                     runMain(oddNumbersList, currentIndex, oddNumbersList.length);
-//                     break;
-//                 default:
-//                     console.log('Unknown button:', activeButton.id);
-//             }
-//         });
-//     } else {
-//         // No button is active, so revert the styles
-//         revertStyles();
-//     }
-// }
-
-// function testSwitch(btnNumber, btnName) {
-//     const button = document.getElementById(`test-btn${btnNumber}`);
-
-//     // Get all buttons in the container
-//     const allButtons = document.querySelectorAll('.item-strats button');
-
-//      // Check if previous_results is empty
-//     if (globalPreviousDraw.length == 0) {
-//         // Update caption to indicate waiting for previous results
-//         caption.innerHTML = 'Waiting for previous results';
-//         caption1.innerHTML = 'Waiting for previous results';
-//         return; // Exit function early
-//     }
-
-//     // Deactivate all buttons
-//     allButtons.forEach(btn => {
-//         if (btn.id !== `test-btn${btnNumber}`) {
-//             btn.classList.remove('active');
-//         }
-//     });
-
-//     button.classList.toggle('active');
-
-//     const activeButtons = document.querySelectorAll('.item-strats button.active');
-//     if (activeButtons.length > 0) {
-
-//         currentIndex = 0;
-//         revertStyles();
-
-//         // Iterate over all active buttons
-//         activeButtons.forEach(activeButton => {
-//             // Get the corresponding array and call runInfo
-//             switch (activeButton.id) {
-//                 case 'test-btn1':
-//                     //runInfo(sample_test1, currentIndex, sample_test1.length);
-//                     runMain(sample_test1, currentIndex, sample_test1.length);
-//                     countMatchingElements(previous_plucker[0], previous_results[1], previous_plucker[0].length, btnName)
-//                     break;
-//                 case 'test-btn2':
-//                     //runInfo(sample_test2, currentIndex, sample_test2.length);
-//                     runMain(sample_test2, currentIndex, sample_test2.length);
-//                     countMatchingElements(previous_picks[0], previous_results[1], previous_picks[0].length, btnName)
-//                     break;
-//                 case 'test-btn3':
-//                     //runInfo(sample_test3, currentIndex, sample_test3.length);
-//                     runMain(sample_test3, currentIndex, sample_test3.length);
-//                     countMatchingElements(previous_selects[0], previous_results[1], previous_selects[0].length, btnName)
-//                     break;
-//                 case 'test-btn4':
-//                     //runInfo(sample_test4, currentIndex, sample_test4.length);
-//                     runMain(sample_test4, currentIndex, sample_test4.length);
-//                     countMatchingElements(previous_taps[0], previous_results[1], previous_taps[0].length, btnName)
-//                     break;
-//                 case 'test-btn5':
-//                     //runInfo(sample_test5, currentIndex, sample_test5.length);
-//                     runMain(sample_test5, currentIndex, sample_test5.length);
-//                     countMatchingElements(previous_digs[0], previous_results[1], previous_digs[0].length, btnName)
-//                     break;
-//                 case 'test-btn6':
-//                     //runInfo(sample_test6, currentIndex, sample_test6.length);
-//                     runMain(sample_test6, currentIndex, sample_test6.length);
-//                     countMatchingElements(previous_grabs[0], previous_results[1], previous_grabs[0].length, btnName)
-//                     break;
-//                 case 'test-btn7':
-//                     //runInfo(sample_test7, currentIndex, sample_test7.length);
-//                     runMain(sample_test7, currentIndex, sample_test7.length);
-//                     countMatchingElements(previous_snags[0], previous_results[1], previous_snags[0].length, btnName)
-//                     break;
-//                 case 'test-btn8':
-//                     //runInfo(sample_test8, currentIndex, sample_test8.length);
-//                     runMain(sample_test8, currentIndex, sample_test8.length);
-//                     countMatchingElements(previous_wagers[0], previous_results[1], previous_wagers[0].length, btnName)
-//                     break;
-//                 case 'test-btn9':
-//                     //runInfo(sample_test9, currentIndex, sample_test9.length);
-//                     runMain(sample_test9, currentIndex, sample_test9.length);
-//                     countMatchingElements(previous_stakes[0], previous_results[1], previous_stakes[0].length, btnName)
-//                     break;
-//                 default:
-//                     console.log('Unknown button:', activeButton.id);
-//             }
-//         });
-//     } else {
-//         // No button is active, so revert the styles
-//         revertStyles();
-//         caption.innerHTML = 'Waiting on at least one game!!'
-//         caption1.innerHTML = 'Waiting on at least one game!!'
-//     }
-// }
-
-
