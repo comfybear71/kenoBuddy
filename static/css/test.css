@@ -1,0 +1,695 @@
+body, html {
+    margin: 0;
+    transition: background-color 0.5s ease;
+  }
+  body.day-mode {
+    background-color: #fff;
+    color: #000;
+  }
+  body.day-mode .navbar, body.day-mode .section, body.day-mode .card, 
+  body.day-mode .footer, body.day-mode .footer-below, body.day-mode .footer-hot-cold, body.day-mode .footer-below-crazy  {
+    background-color: #f1f1f1; 
+    border: 1px solid black;
+    border-radius: 5px; 
+    margin-bottom: 8px;
+  }
+  body.night-mode {
+    background-color: #333;
+    color: #ddd;
+  }
+
+body.day-mode .navbar-inverse .navbar-toggle .icon-bar {
+  background-color: #673AB7; /* Change to black or any dark color you prefer */
+}
+
+body.day-mode .navbar-inverse .navbar-right > li > a {
+  color: #000; /* Black for day mode */
+}
+body.night-mode .navbar-inverse .navbar-right > li > a {
+  color: #fff; /* White for night mode */
+}
+
+  body.night-mode .navbar, body.night-mode .section, body.night-mode .card, 
+  body.night-mode .footer, body.night-mode .footer-below, body.night-mode .footer-hot-cold, body.night-mode .footer-below-crazy  {
+    background-color: #555;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    margin-bottom: 8px;
+  }
+  .container-fluid > .row {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .section {
+    padding: 5px;
+  }
+  
+  /* Ensure this is outside the media query to have a default styling */
+  .cards-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .card {
+    flex: 0 0 calc(25% - 20px); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; 
+    padding: 10px; 
+    margin: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+  }
+
+
+  /* Day mode card colors */
+  body.day-mode .card#card-1 { background-color: #FFC107; }
+  body.day-mode .card#card-2 { background-color: #03A9F4; }
+  body.day-mode .card#card-3 { background-color: #4CAF50; }
+  body.day-mode .card#card-4 { background-color: #FF9800; }
+  /* Night mode card colors */
+  body.night-mode .card#card-1 { background-color: #FF5722; }
+  body.night-mode .card#card-2 { background-color: #673AB7; }
+  body.night-mode .card#card-3 { background-color: #3F51B5; }
+  body.night-mode .card#card-4 { background-color: #E91E63; }
+
+  .buttons-container {
+      display: flex;
+      flex-direction: column;
+      margin-top: 15px; /* Spacing from the top */
+    }
+    
+    .button-row {
+      display: flex;
+      justify-content: space-between; /* Spread buttons evenly */
+      margin-bottom: 10px; /* Spacing between rows */
+    }
+    
+    .button-row button {
+      flex: 1; /* Each button will take equal space */
+      padding: 10px;
+      margin: 0 5px; /* Spacing between buttons */
+      border: none;
+      border-radius: 5px;
+      background-color: #03A9F4; /* Default day mode color */
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+    }
+    
+    /* Adjust the background color of the buttons for night mode */
+    body.night-mode .button-row button {
+      background-color: #03A9F4;
+    }
+    
+    /* Hover effects */
+    .button-row button:hover {
+      background-color: #0292C9; /* Slightly darker for day mode */
+    }
+    
+    body.night-mode .button-row button:hover {
+      background-color: #5C49B6; /* Slightly lighter for night mode */
+    }
+
+    .new-footer {
+      background-color: #262626; /* Dark background */
+      color: #f8f8f8; /* Light text */
+      padding: 20px 0;
+    }
+    
+    .new-footer p {
+      margin: 0 0 10px;
+    }
+    
+    /* .new-footer .social-links {
+      /* Add your styling for social links here */
+    /* } */ 
+    
+    .new-footer .social-link {
+      color: #f8f8f8; /* Light link color for visibility on dark background */
+      margin: 0 10px;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .new-footer .social-link:hover {
+      color: #cccccc; /* Lighter grey on hover */
+    }
+
+    .new-footer p {
+      margin: 0;
+      padding: 20px 0; /* Adds padding within each column */
+    }
+    
+    .footer-link {
+      color: #f8f8f8; /* Light link color for visibility on dark background */
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-link:hover {
+      color: #cccccc; /* Lighter grey on hover */
+    }
+    .middle-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1em;
+      overflow: hidden; /* Prevents the children from overflowing */
+      /* Ensure there's enough room for the grid */
+      /*min-height: 500px;  Adjust this based on your content and layout */
+      max-width: 100%; /* Ensure the middle-main doesn't exceed the width of its parent */
+    }
+    
+    .board {
+      max-width: 100%;
+      width: 100%; /* Use up to 100% of the middle-main width */
+      margin: 0 auto; /* Center the board if it's smaller than the available space */
+      overflow: hidden; /* Prevents the grid from overflowing */
+    }
+    
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr); /* 10 columns for numbers 1-10 */
+      /*grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));  Or use percentages */
+      /*grid-template-columns: repeat(10, calc(50% - 10px));  */
+      /* gap: 5px; */
+      justify-content: center;
+      /* padding: 5px; */
+    }
+    
+    .cell {
+      position: relative; 
+      /*width: 100%;  Makes the cell width responsive to the grid column size */
+      padding-top: 10px; /* Top padding to create a rectangle shape (adjust as needed) */
+      padding-bottom: 10px; /* Bottom padding (adjust as needed) */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid black;
+      border-radius: 5px;
+      margin: 2px; /* Space between cells */
+      background-color: #f0f0f0; 
+      flex-grow: 1; /* Allow cell to grow */
+      flex-shrink: 1; /* Allow cell to shrink */
+      opacity: 0.5;
+    }
+
+    /* Night Mode Styles for Cells */
+    body.night-mode .cell {
+      background-color: #333; /* Dark background for the cells */
+      color: #ffffff !important; /* White text color */
+      font-weight: bold; /* Make the text bold */
+    }
+    
+    /* Day Mode for .section.middle-main */
+    body.day-mode .section.middle-main {
+      background-color: #ffffff !important; /* Ensures white background in day mode */
+    }
+    
+    /* Night Mode for .section.middle-main */
+    body.night-mode .section.middle-main {
+      background-color: #444 !important; /* Lighter dark background compared to cells */
+    }
+
+    /* Spacer for the gap between rows */
+  .grid-gap {
+      width: 100%;
+      height: 20px; /* Height of the gap */
+      grid-column: 1 / -1; /* Make it span all columns */
+  }
+
+
+  .well {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .well.section {
+    /* Override .well styles for this specific section */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: flex-start; /* Align items to the start */
+    justify-content: flex-start; /* Align items to the top */
+    padding: 15px;
+    text-align: left; /* Align text to the left */
+  }
+  
+  /* Select all direct children inside .well.section */
+  .well.section > h3 {
+    margin-bottom: 10px; /* Add some space between the items */
+    width: 100%; /* Ensure they fill the container */
+  }
+
+  .footer-link {
+    font-size: 20px; /* Adjust the font size as needed */
+    color: #f8f8f8; /* Assuming you want to keep the existing color */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #cccccc; /* Lighter grey on hover for visibility */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.pick-item,
+.crazy-item,
+.insane-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 26px;
+    color: white;
+    font-weight: bold;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 5px;
+    border: 2px solid white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+    margin-bottom: 10px;
+    width: 80%; /* Adjust this percentage as needed */
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+
+    .pick-item {
+        background-color: green;
+    }
+
+    .crazy-item {
+        background-color: orange;
+    }
+    .insane-item {
+        background-color: red;
+    }
+
+    .default-message {
+        background-color: black;
+    }
+    .crazy-message {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 26px;
+        color: white;
+        font-weight: bold;
+        border: 2px solid white;
+        justify-content: center;
+        padding: 5px;
+        background-color: red;
+        border-radius: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 4px solid black;
+        margin-bottom: 10px;
+    }
+
+  
+  .crazies {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr)); /* Adjust 150px as needed */
+      justify-items: stretch;
+      margin-top: 10px;
+  }
+
+
+
+  .top-number,
+  .bottom-number {
+      text-align: center;
+      display: block;
+  }
+
+  .top-number {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: "#F5F5F5";
+  }
+
+  .bottom-number {
+      font-size: 0.5em;
+      color: "#F5F5F5";
+      white-space: nowrap;
+      margin: 2px;
+  }
+
+
+
+
+
+
+
+
+
+.footer-hot-cold{
+  margin-bottom: 5px;;
+}
+.hot-cold {
+    grid-column: span 1 / 3;
+}
+.hot, .cold {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Center items vertically, if they don't all have the same height */
+}
+
+  .hot-item {
+      background-color: #c5202b;
+  }
+
+  .cold-item {
+      background-color: #006bb5;
+  }
+  .hot-item, .cold-item {
+    margin: 10px; /* Add some space around items */
+    /* Add other styles for hot and cold items here */
+  }
+
+  .cold-item,
+  .hot-item {
+      border-radius: 5px;
+      text-align: center;
+      height: 40px;
+      width: 80px;
+      margin: 5px;
+      align-items: center;
+      font-size: 26px;
+      line-height: 40px;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      border: 2px solid white;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+  }
+
+
+
+
+
+
+
+
+.section.caption, .section.caption1 {
+  text-align: center; /* Center the text horizontally */
+  font-weight: bold; /* Make the text bold */
+}
+
+
+.navbar-logo {
+  height: 50px; /* Adjust to make the logo bigger */
+  margin-top: -10px; /* Adjust if needed to raise the logo up a bit */
+  vertical-align: middle; /* Helps with vertical centering */
+}
+.navbar-brand {
+  display: flex;
+  align-items: center; /* This ensures vertical centering of child elements */
+  justify-content: center; /* This centers the content horizontally, useful if the navbar-brand takes up more space */
+  transition: height 0.3s ease;
+}
+
+.navbar {
+  height: auto; /* Allows the navbar to expand to fit content */
+  padding: 10px 0; /* Adds some vertical padding within the navbar, adjust as needed */
+  margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+#main-navbar {
+  margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+
+/* Center content within .well.section */
+.well.section {
+  text-align: center; /* Center text labels */
+}
+
+.dropdown-container {
+  display: block; /* Ensure dropdowns are full-width and labels are centered */
+  margin: auto; /* Center the dropdown container if it has a specific width */
+}
+
+.form-group {
+  margin-bottom: 15px; /* Add some space between form groups */
+}
+
+.form-control, .form-select {
+  width: auto; /* Adjust this to fit content or set a specific width */
+  margin: 0 auto; /* Center the select elements within the form-group */
+  display: inline-block; /* Align the width of select elements to their content */
+}
+
+/* .info.noDisplay{
+  display: none; 
+} */
+
+.info {
+  display: flex; /* This will enable flexbox */
+  justify-content: space-around; /* This will space out the items evenly */
+  align-items: center; /* This aligns items vertically in the center, if needed */
+}
+
+
+
+
+
+
+
+
+
+  
+  @media (min-width: 1600px) {
+    .top-number {
+      font-size: 1.6em;
+      margin-bottom: 1px;
+    }
+  
+    .bottom-number {
+      font-size: 0.6em;
+      margin: 1px;
+    }
+  
+    .footer, .footer-below {
+      margin-top: 15px;
+    }
+  }
+
+
+  @media (min-width: 1025px) and (max-width: 1304px) {
+    .top-number {
+      font-size: 1.2em;
+      margin-bottom: 1px;
+    }
+  
+    .bottom-number {
+      font-size: 0.7em;
+      margin: 1px;
+    }
+  
+    .footer, .footer-below {
+      margin-top: 15px;
+    }
+    .col-sm-8 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  
+    .middle-main, .middle-top, .middle-bottom {
+      order: 1;
+      flex: 1 0 100%;
+      max-width: 100%; 
+    }
+  
+    .left-column, .right-column {
+      order: 3;
+      flex-basis: 100%; 
+      max-width: 100%;
+    }
+    .navbar-logo {
+      height: 20px; /* Slightly smaller */
+    }
+    
+  }
+
+
+
+@media only screen and (max-width: 1024px) and (orientation: portrait) {
+  .top-number {
+    font-size: 1.2em;
+    margin-bottom: 1px;
+  }
+
+  .bottom-number {
+    font-size: 0.5em;
+    margin: 1px;
+  }
+
+  .footer, .footer-below {
+    margin-top: 15px;
+  }
+  .col-sm-8 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .middle-main, .middle-top, .middle-bottom {
+    order: 1;
+    flex: 1 0 100%;
+    max-width: 100%; 
+  }
+
+  .left-column, .right-column {
+    order: 3;
+    flex-basis: 100%; 
+    max-width: 100%;
+  }
+
+  .navbar-logo {
+    height: 40px; /* Slightly smaller */
+}
+  
+}
+
+
+/* SMALLEST ON PC */
+@media only screen and (max-width: 768px) and (orientation: portrait) {
+  .top-number {
+    font-size: 1em; 
+  }
+
+  .bottom-number {
+    display: none !important; 
+  }
+
+}
+
+
+/* MY IPHONE 15 Pro MAX */
+@media (min-width: 370px) and (max-width: 450px)  {
+  .card {
+      height: 40px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+  }
+  .navbar-logo {
+    height: 40px !important;  /* Slightly smaller */
+  }
+  .cell {
+    display: flex; /* Enable flexbox */
+    align-items: center; /* Vertically center the flex items */
+    justify-content: center; /* Horizontally center */
+    font-size: 1em; /* Smaller font size */
+    padding: 0px; /* Reduced padding */
+    height: 28px; /* Adjusted height */
+    width: 30px; /* Adjust width as necessary, or use 'auto' to maintain aspect ratio */
+    margin-bottom: 0px;
+  }
+
+  
+  .hot-item.noDisplay, .cold-item.noDisplay{
+    display: none !important;
+  }
+
+  .hot, .cold {
+    display: flex;
+    justify-content: space-around; /* Distributes items evenly with space around them */
+    flex-wrap: nowrap; /* Prevents wrapping to ensure a single row */
+  }
+
+
+  .hot-item, .cold-item {
+    border-radius: 1px;
+    text-align: center;
+    height: 30px; /* Reduced height */
+    width: 50px;  /* Reduced width */
+    margin: 3px;  /* Reduced margin */
+    align-items: center;
+    font-size: 14px; /* Reduced font size */
+    line-height: 24px; /* Adjusted line height to match new height */
+    color: white;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6);
+    display: inline-block; /* Align items in a row */
+  }
+
+  .pick-item,
+  .crazy-item,
+  .insane-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 1px;
+    border: 2px solid white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 4px;
+  }
+  .crazies {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(50px, 1fr)); /* Adjust 150px as needed */
+    justify-items: stretch;
+    margin-top: 10px;
+  }
+  .middle-main {
+    padding: 0px;
+    border: 0px solid black !important;
+  }
+  
+}
+
+
+
+
+
+
+

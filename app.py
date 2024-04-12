@@ -5,7 +5,7 @@ import json
 from dbconnector.timeutils import calculate_time_difference
 from dbconnector.connector import connect_to_database
 from dbconnector.telegramError import send_telegram_message
-
+import logging
 
 app = Flask(__name__)
 
@@ -113,9 +113,6 @@ def fetch_vic():
     else:
         return jsonify({"error": "Database connection failed."})
 
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -140,6 +137,10 @@ def qld_view():
 def vic_view():
     return render_template('vic_view.html')
 
+@app.route('/old')
+def old():
+    return render_template('old.html')
+
 @app.route('/fetch', methods=['GET', 'POST'])
 def proxy():
     conn = connect_to_database()
@@ -147,6 +148,10 @@ def proxy():
     
     if request.method == 'POST':
         data = request.get_json()
+        # app.logger.info('Received data: %s', data)
+        # if not data or 'jurisdiction' not in data or 'numOfGames' not in data:
+        #     app.logger.error('Invalid data received')
+        #     return jsonify({'error': 'Invalid data'}), 400
         jurisdiction = data.get('jurisdiction')
         numOfGames = int(data.get('numOfGames'), 0)
         
@@ -163,7 +168,6 @@ def proxy():
                 table_name = "vic_draws"
                 
             if table_name:
-                # Directly using numOfGames in the query after validation
                 query = f"SELECT * FROM {table_name} ORDER BY id DESC LIMIT {numOfGames}"
                 crsr.execute(query)
                 records = crsr.fetchall()

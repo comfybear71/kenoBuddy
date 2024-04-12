@@ -32,10 +32,10 @@ const appState = {
     }
 };
 
+
 function fetchDataAndUpdateDOM() {
     if (isFetching) return;
     isFetching = true;
-
     
     fetch('/fetch', {
             method: 'POST',
@@ -47,10 +47,18 @@ function fetchDataAndUpdateDOM() {
                 numOfGames: appState.numOfGames 
             }),
         })
+        
         .then(response => response.json())
         .then(responseData  => {
+            if (!responseData.data) {
+                throw new Error('Data is undefined');
+            }
 
             const processedData = responseData.data.processedData; //draws, current_game_number, count_values, indices, hot_numbers, cold_numbers
+            if (!processedData) {
+                throw new Error('processedData is undefined');
+            }
+            
             const numbers_array = Array.from({length: 80}, (_, index) => index + 1);
             
             const current_draw = processedData.draws[0];
@@ -204,20 +212,20 @@ function updateBoard(firstFiveElementsFromEach, countValues) {
         // Update bottomDiv content with first five elements from each corresponding index
         bottomDiv.textContent = firstFiveElementsFromEach[index].join(', '); // Assuming it's an array
 
-        // Find or create the badge div
-        let badge = cell.querySelector('.badge');
-        if (!badge) {
-            badge = document.createElement('div');
-            badge.className = 'badge';
-            cell.appendChild(badge);
-        }
+        // // Find or create the badge div
+        // let badge = cell.querySelector('.badge');
+        // if (!badge) {
+        //     badge = document.createElement('div');
+        //     badge.className = 'badge';
+        //     cell.appendChild(badge);
+        // }
 
-        // Calculate the percentage value for the badge
-        const percentageValue = Math.round((countValues[index] / totalDraws) * 100);
-        badge.textContent = `${percentageValue}%`;
+        // // Calculate the percentage value for the badge
+        // const percentageValue = Math.round((countValues[index] / totalDraws) * 100);
+        // badge.textContent = `${percentageValue}%`;
 
-        // Update badge style based on the percentage value
-        badge.style.backgroundColor = getBadgeColor(percentageValue, totalDraws);
+        // // Update badge style based on the percentage value
+        // badge.style.backgroundColor = getBadgeColor(percentageValue, totalDraws);
     }
 }
 
@@ -324,7 +332,7 @@ function revertStyles() {
         var bottom_text_element = document.getElementById(bottom_text_id_value)
 
         if (element) {
-            element.style.backgroundColor = "lightgrey";
+            element.style.backgroundColor = "#555";
             element.style.border = "2px solid grey";
             element.style.boxShadow = "0px 4px 8px rgba(0, 0, 0, 0.1)";
             element.style.opacity = "0.7";
@@ -389,7 +397,7 @@ twoButtons.forEach(buttonId => {
 function handleTwoButtonClick(event){
     const buttonName = event.target.id;
 
-    if (buttonName === 'random' || buttonName === 'chances') {
+    if (buttonName === 'chances') {
         currentIndex = 0;
         revertStyles();
         let message1 = 'Random/Chances Draw';
@@ -397,6 +405,24 @@ function handleTwoButtonClick(event){
         caption1.innerHTML = message1
         const randomNumbers = generateUniqueRandomNumbers(20, 80);
         runMain(randomNumbers, 0, randomNumbers.length);
+    }
+
+    if (buttonName === 'random') {
+        currentIndex = 0;
+        revertStyles();
+
+        const random_number = Math.floor(Math.random() * (board_rows * board_columns)) + 1;
+        const random_orientation = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
+        const valid_t_pattern_proper_4 = generate_proper_t_pattern_4(random_number, random_orientation);
+
+        if (valid_t_pattern_proper_4) {
+            console.log("Generated T-Pattern:", valid_t_pattern_proper_4);
+            runMain(valid_t_pattern_proper_4, 0, 4);
+        } else {
+            console.log("Unable to generate a valid T-Pattern after 100 attempts.");
+            revertStyles();
+        }
+        
     }
 }
 
@@ -546,7 +572,7 @@ function createItem(number, index, type) {
 
     const bottomText = document.createElement('div');
     bottomText.className = 'bottom-text';
-    bottomText.textContent =  + index + ' games ago';
+    bottomText.textContent =  + index + ' ago';
     item.appendChild(bottomText);
 
     return item;
@@ -635,6 +661,61 @@ function appendItemsToColumn() {
 
 // Call the function to append items
 appendItemsToColumn();
+
+
+
+
+
+
+
+
+
+
+const t_orientations_proper_4 = {
+    0: [[0, -1], [1, -1], [1, 0], [1, 1]],  // Regular T
+    90: [[-1, 0], [0, 0], [1, 0], [0, 1]],  // T rotated 90° (horizontal bar on the bottom)
+    180: [[0, -1], [-1, -1], [-1, 0], [-1, 1]], // T rotated 180° (upside-down T)
+    270: [[-1, 0], [0, 0], [1, 0], [0, -1]]   // T rotated 270° (horizontal bar on the top)
+};
+
+const board_rows = 8;
+const board_columns = 10;
+
+function is_valid_position(row, column) {
+    return row >= 0 && row < board_rows && column >= 0 && column < board_columns;
+}
+
+function generate_proper_t_pattern_4(center_number, orientation) {
+    // Find the center position of the T-pattern based on the chosen number
+    const center_row = Math.floor((center_number - 1) / board_columns);
+    const center_column = (center_number - 1) % board_columns;
+    
+    // Get the relative positions for the T based on the chosen orientation
+    const t_relative_positions = t_orientations_proper_4[orientation];
+    
+    // Calculate the absolute positions for the T-pattern on the board
+    const t_positions = [];
+    for (const relative_position of t_relative_positions) {
+        const row = center_row + relative_position[0];
+        const column = center_column + relative_position[1];
+        if (is_valid_position(row, column)) {
+            // Convert back to number representation
+            t_positions.push(row * board_columns + column + 1);
+        }
+    }
+    
+    return t_positions.length === t_relative_positions.length ? t_positions : null;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
