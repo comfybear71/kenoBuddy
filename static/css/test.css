@@ -193,14 +193,14 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
     .cell {
       position: relative; 
       /*width: 100%;  Makes the cell width responsive to the grid column size */
-      padding-top: 10px; /* Top padding to create a rectangle shape (adjust as needed) */
-      padding-bottom: 10px; /* Bottom padding (adjust as needed) */
+      padding-top: 5px; /* Top padding to create a rectangle shape (adjust as needed) */
+      padding-bottom: 5px; /* Bottom padding (adjust as needed) */
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid black;
       border-radius: 5px;
-      margin: 2px; /* Space between cells */
+      margin: 1px; /* Space between cells */
       background-color: #f0f0f0; 
       flex-grow: 1; /* Allow cell to grow */
       flex-shrink: 1; /* Allow cell to shrink */
@@ -241,13 +241,10 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
   }
 
   .well.section {
-    /* Override .well styles for this specific section */
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
-    align-items: flex-start; /* Align items to the start */
-    justify-content: flex-start; /* Align items to the top */
-    padding: 15px;
-    text-align: left; /* Align text to the left */
+    display: flex;  /* This turns .well.section into a flex container */
+    flex-wrap: wrap; /* This allows the items to wrap if necessary */
+    justify-content: space-between; /* This spreads out the children with space between them */
+    align-items: center; /* This centers the dropdowns vertically */
   }
   
   /* Select all direct children inside .well.section */
@@ -425,13 +422,6 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
   }
 
-
-
-
-
-
-
-
 .section.caption, .section.caption1 {
   text-align: center; /* Center the text horizontally */
   font-weight: bold; /* Make the text bold */
@@ -466,199 +456,164 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
   text-align: center; /* Center text labels */
 }
 
-.dropdown-container {
-  display: block; /* Ensure dropdowns are full-width and labels are centered */
-  margin: auto; /* Center the dropdown container if it has a specific width */
-}
 
 .form-group {
-  margin-bottom: 15px; /* Add some space between form groups */
+  width: 100%; 
 }
-
-.form-control, .form-select {
-  width: auto; /* Adjust this to fit content or set a specific width */
-  margin: 0 auto; /* Center the select elements within the form-group */
-  display: inline-block; /* Align the width of select elements to their content */
-}
-
-/* .info.noDisplay{
-  display: none; 
-} */
 
 .info {
   display: flex; /* This will enable flexbox */
-  justify-content: space-around; /* This will space out the items evenly */
+  justify-content: space-evenly; /* This will space out the items evenly */
   align-items: center; /* This aligns items vertically in the center, if needed */
 }
 
-
-
-
-
-
-
-
-
-  
-  @media (min-width: 1600px) {
-    .top-number {
-      font-size: 1.6em;
-      margin-bottom: 1px;
-    }
-  
-    .bottom-number {
-      font-size: 0.6em;
-      margin: 1px;
-    }
-  
-    .footer, .footer-below {
-      margin-top: 15px;
-    }
-  }
-
-
-  @media (min-width: 1025px) and (max-width: 1304px) {
-    .top-number {
-      font-size: 1.2em;
-      margin-bottom: 1px;
-    }
-  
-    .bottom-number {
-      font-size: 0.7em;
-      margin: 1px;
-    }
-  
-    .footer, .footer-below {
-      margin-top: 15px;
-    }
-    .col-sm-8 {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
-  
-    .middle-main, .middle-top, .middle-bottom {
-      order: 1;
-      flex: 1 0 100%;
-      max-width: 100%; 
-    }
-  
-    .left-column, .right-column {
-      order: 3;
-      flex-basis: 100%; 
-      max-width: 100%;
-    }
-    .navbar-logo {
-      height: 20px; /* Slightly smaller */
-    }
-    
-  }
-
-
-
-@media only screen and (max-width: 1024px) and (orientation: portrait) {
-  .top-number {
-    font-size: 1.2em;
-    margin-bottom: 1px;
-  }
-
-  .bottom-number {
-    font-size: 0.5em;
-    margin: 1px;
-  }
-
-  .footer, .footer-below {
-    margin-top: 15px;
-  }
-  .col-sm-8 {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-
-  .middle-main, .middle-top, .middle-bottom {
-    order: 1;
-    flex: 1 0 100%;
-    max-width: 100%; 
-  }
-
-  .left-column, .right-column {
-    order: 3;
-    flex-basis: 100%; 
-    max-width: 100%;
-  }
-
-  .navbar-logo {
-    height: 40px; /* Slightly smaller */
+.controls {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
 }
-  
+
+.dropdown-container {
+  display: inline-flex;
+  flex-direction: column;
+  margin: 0 10px;
 }
 
 
-/* SMALLEST ON PC */
-@media only screen and (max-width: 768px) and (orientation: portrait) {
-  .top-number {
-    font-size: 1em; 
-  }
 
+
+
+
+
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.label-text {
+  margin: 0 10px;
+  font-weight: bold;
+  color: #666; /* Adjust color to match your theme */
+}
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (min-width: 370px) and (max-width: 450px) {
   .bottom-number {
     display: none !important; 
   }
-
-}
-
-
-/* MY IPHONE 15 Pro MAX */
-@media (min-width: 370px) and (max-width: 450px)  {
   .card {
-      height: 40px;
-      font-size: 12px;
-      font-weight: bold;
-      color: white;
+    height: 40px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
   }
-  .navbar-logo {
-    height: 40px !important;  /* Slightly smaller */
-  }
-  .cell {
-    display: flex; /* Enable flexbox */
-    align-items: center; /* Vertically center the flex items */
-    justify-content: center; /* Horizontally center */
-    font-size: 1em; /* Smaller font size */
-    padding: 0px; /* Reduced padding */
-    height: 28px; /* Adjusted height */
-    width: 30px; /* Adjust width as necessary, or use 'auto' to maintain aspect ratio */
-    margin-bottom: 0px;
+  .navbar-brand img {
+    height: 40px; /* Adjust the logo height as needed */
   }
 
-  
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    padding: 0;
+    height: 28px;
+    width: 30px;
+    margin-bottom: 0;
+  }
+  .hot-item, .cold-item {
+    border-radius: 1px;
+    text-align: center;
+    height: 30px;
+    width: 50px;
+    margin: 3px;
+    align-items: center;
+    font-size: 14px;
+    line-height: 24px;
+    color: white;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    display: inline-block;
+  }
+
   .hot-item.noDisplay, .cold-item.noDisplay{
     display: none !important;
   }
 
-  .hot, .cold {
-    display: flex;
-    justify-content: space-around; /* Distributes items evenly with space around them */
-    flex-wrap: nowrap; /* Prevents wrapping to ensure a single row */
-  }
-
-
-  .hot-item, .cold-item {
-    border-radius: 1px;
-    text-align: center;
-    height: 30px; /* Reduced height */
-    width: 50px;  /* Reduced width */
-    margin: 3px;  /* Reduced margin */
-    align-items: center;
-    font-size: 14px; /* Reduced font size */
-    line-height: 24px; /* Adjusted line height to match new height */
-    color: white;
-    font-weight: bold;
-    border: 2px solid white;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6);
-    display: inline-block; /* Align items in a row */
-  }
-
-  .pick-item,
-  .crazy-item,
-  .insane-item {
+  .pick-item, .crazy-item, .insane-item {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -669,24 +624,87 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
     padding: 2px;
     border-radius: 1px;
     border: 2px solid white;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
     width: 90%;
     margin: 0 auto;
     margin-bottom: 4px;
   }
-  .crazies {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(50px, 1fr)); /* Adjust 150px as needed */
-    justify-items: stretch;
-    margin-top: 10px;
-  }
-  .middle-main {
-    padding: 0px;
-    border: 0px solid black !important;
-  }
-  
 }
 
+
+
+/* // X-Small devices (portrait phones, less than 576px)*/
+@media (min-width: 575.98px) and (max-width: 767px){
+  .hot-item.noDisplylg, .cold-item.noDisplylg{
+    display: none !important;
+  }
+  .hot-item.noDisplay, .cold-item.noDisplay{
+    display: none !important;
+  }
+  .bottom-number {
+    display: none !important; 
+  }
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    padding: 0;
+    height: 48px;
+    flex: 1; /* Allows the cell to grow and fill the space */
+    margin: 1; /* No margin for the cell */
+    border: 1px solid transparent; /* Adjust border as needed */
+    box-sizing: border-box;
+  }
+}
+
+
+
+
+
+/* // Small devices (landscape phones, less than 768px) */
+@media (min-width: 768px) and (max-width: 991.97px) {   
+  .hot-item.noDisplylg, .cold-item.noDisplylg{
+    display: none !important;
+  }
+  .bottom-number {
+    display: none !important; 
+  }
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    padding: 0;
+    height: 48px;
+    flex: 1; /* Allows the cell to grow and fill the space */
+    margin: 2; /* No margin for the cell */
+    border: 1px solid transparent; /* Adjust border as needed */
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1599.98px) {   
+  .hot-item.noDisplylg, .cold-item.noDisplylg{
+    display: none !important;
+  }
+  .bottom-number {
+    display: none !important; 
+  }
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    padding: 0;
+    height: 48px;
+    flex: 1; /* Allows the cell to grow and fill the space */
+    margin: 2; /* No margin for the cell */
+    border: 1px solid transparent; /* Adjust border as needed */
+    box-sizing: border-box;
+
+  }
+}
 
 
 

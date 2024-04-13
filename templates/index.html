@@ -6,120 +6,91 @@
     <link type="image/png" sizes="32x32" rel="icon" href="{{ url_for('static', filename='icons/icons8-lottery-32.png') }}">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+ <!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">--> 
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
 <body class="night-mode">
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" 
-      data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
       <a class="navbar-brand" href="#">
-        <img src="../static/images/kb-logo.png" class="navbar-logo" alt="Logo" style="height: 60px;"> <!-- Adjust the path and style as needed -->
+        <img src="../static/images/kb-logo.png" alt="Logo" style="height: 60px;">
       </a>
-    </div>
-    <div class="collapse navbar-collapse" id="navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="https://t.me/kenobuddybot">Telegram Bot</a></li>
-        <li><a href="https://t.me/kenobuddy">Telegram Channel</a></li>
-        <li><a href="https://kenobuddy.com.au/qld-view">QLD-Stats</a></li>
-        <li><a href="https://kenobuddy.com.au/vic-view">VIC-Stats</a></li>
-        <li><a href="https://kenobuddy.com.au/act-view">ACT-Stats</a></li>
-        <li><a href="https://kenobuddy.com.au/nsw-view">NSW-Stats</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" onclick="toggleTheme();">Toggle Night/Day</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div class="container-fluid" style="padding-top: 80px; padding-left: 0px; padding-right: 0px;">
-  <div class="row row-flex">
-    <div class="col-xs-12 col-sm-2 sidenav left-column">
-      <div class="well section">
-        <!-- Wrapping each dropdown in a form group for better structure -->
-        <div class="dropdown-container mb-3">
-          <div class="form-group">
-            <!-- Label above the dropdown -->
-            <label for="jurisdiction" class="form-label">Select Jurisdiction:</label>
-            <!-- Making the select element wider using form control class and additional styling if needed -->
-            <select class="form-control form-select" id="jurisdiction" style="width: 100%;">
-              <option value="ACT">SA</option>
-              <option value="ACT">NT</option>
-              <option value="VIC">VIC</option>
-              <option value="QLD">QLD</option>
-              <option value="ACT">TAS</option>
-              <option value="NSW">NSW</option>
-              <option value="ACT" selected>ACT</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="dropdown-container">
-          <div class="form-group">
-            <label for="numOfGames" class="form-label">Number of games:</label>
-            <select class="form-control form-select" id="numOfGames" style="width: 100%;">
-              <option value="20">20</option>
-              <option value="50" selected>50</option>
-              <option value="100">100</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!--<div class="well section visible-xs-block">
-
-        <div class="row">
-            <div class="col-xs-6">
-
-                <div class="form-group">
-                    <label for="jurisdiction" class="form-label">Select Jurisdiction:</label>
-                    <select class="form-control form-select" id="jurisdiction">
-                      <option value="ACT">SA</option>
-                      <option value="ACT">NT</option>
-                      <option value="VIC">VIC</option>
-                      <option value="QLD">QLD</option>
-                      <option value="ACT">TAS</option>
-                      <option value="NSW">NSW</option>
-                      <option value="ACT" selected>ACT</option>
-                    </select>
-                </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="https://t.me/kenobuddybot">Telegram Bot</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://t.me/kenobuddy">Telegram Channel</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://kenobuddy.com.au/qld-view">QLD-Stats</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://kenobuddy.com.au/vic-view">VIC-Stats</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://kenobuddy.com.au/act-view">ACT-Stats</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://kenobuddy.com.au/nsw-view">NSW-Stats</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <div class="theme-switch-wrapper">
+              <span class="label-text">Night</span>
+              <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox" onchange="toggleTheme();" />
+                <div class="slider round"></div>
+              </label>
+              <span class="label-text">Day</span>
             </div>
-            <div class="col-xs-6">
-
-                <div class="form-group">
-                    <label for="numOfGames" class="form-label">Number of games:</label>
-                    <select class="form-control form-select" id="numOfGames">
-                      <option value="20">20</option>
-                      <option value="50" selected>50</option>
-                      <option value="100">100</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+          </li>
+        </ul>
       </div>
-    -->
-
     </div>
+  </nav>
+  
 
-    <div class="col-xs-12 col-sm-8"> 
+<div class="container-fluid mt-5" style="padding-top: 80px; padding-left: 0px; padding-right: 0px;">
+  <div class="row d-flex flex-column flex-md-row">
+    
+
+    <!-- Main Content -->
+    <div class="col-12 col-sm-12 col-md-12 col-xl-8 order-2 order-xl-2 order-lg-2 order-sm-1 order-md-1">
+        
         <div class="section info noDisplay">
-            
           <h4 id="gameState">Results</h4>
           <h4 id="gameNumber">Game: N/A</h4>
           <h4 id="timer">Next: 0:0</h4>
-          
         </div>
+        <div class="section controls noDisplay">
+            <div class="dropdown-container mb-3">
+              <div class="form-group">
+                <label for="jurisdiction" class="form-label">Select Jurisdiction:</label>
+                <select class="form-control form-select" id="jurisdiction" style="width: 100%;">
+                  <option value="ACT">SA</option>
+                  <option value="ACT">NT</option>
+                  <option value="VIC">VIC</option>
+                  <option value="QLD">QLD</option>
+                  <option value="ACT">TAS</option>
+                  <option value="NSW">NSW</option>
+                  <option value="ACT" selected>ACT</option>
+                </select>
+              </div>
+            </div>
+    
+            <div class="dropdown-container">
+              <div class="form-group">
+                <label for="numOfGames" class="form-label">Number of games:</label>
+                <select class="form-control form-select" id="numOfGames" style="width: 100%;">
+                  <option value="20">20</option>
+                  <option value="50" selected>50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+          </div>
+       
+
         <div class="section middle-top">
           <div class="cards-container">
             <div class="card" id="card-1">Card</div>
@@ -127,7 +98,7 @@
             <div class="card" id="card-3">Card</div>
             <div class="card" id="card-4">Card</div>
           </div>
-      </div>
+        </div>
       <div class="section caption">
           <div class="caption" id="caption">My Keno Buddy</div>
       </div>
@@ -243,9 +214,11 @@
       </div>
       <div class="section caption">
         <div class="caption1" id="caption1">My Keno Buddy</div>
+      </div>
     </div>
-    </div>
-    <div class="col-xs-12 col-sm-2 sidenav right-column">
+
+    <!-- LEFT COL -->
+    <div class="col-12 col-md-12 col-xl-2 order-1 order-xl-1 order-lg-4 order-sm-4 order-md-4">
       <div class="well section">
         <p>ADS</p>
       </div>
@@ -253,16 +226,23 @@
         <p>ADS</p>
       </div>
     </div>
-  </div>
-</div>
+
+    <!-- Right Column -->
+    <div class="col-12 col-md-12 col-xl-2 order-3 order-xl-3 order-lg-5 order-sm-5 order-md-5">
+      <div class="well section">
+        <p>ADS</p>
+      </div>
+      <div class="well section">
+        <p>ADS</p>
+      </div>
+    </div>
 
 
-
-<div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
-  <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
+    <!-- HOT and COLD -->
+    <div class="col-12 col-md-12 col-xl-8 offset-xl-2 order-4 order-xl-4 order-lg-2 order-sm-2 order-md-2">
       <div class="text-center footer-hot-cold">
         <div class="hot">
+          <!-- Hot items listed here -->
           <div class="hot-item" id="hot-item1"></div>
           <div class="hot-item" id="hot-item2"></div>
           <div class="hot-item" id="hot-item3"></div>
@@ -271,10 +251,11 @@
           <div class="hot-item noDisplay" id="hot-item6"></div>
           <div class="hot-item noDisplay" id="hot-item7"></div>
           <div class="hot-item noDisplay" id="hot-item8"></div>
-          <div class="hot-item noDisplay" id="hot-item9"></div>
-          <div class="hot-item noDisplay" id="hot-item10"></div>
-      </div>
-      <div class="cold">
+          <div class="hot-item noDisplay noDisplylg" id="hot-item9"></div>
+          <div class="hot-item noDisplay noDisplylg" id="hot-item10"></div>
+        </div>
+        <div class="cold">
+          <!-- Cold items listed here -->
           <div class="cold-item" id="cold-item1"></div>
           <div class="cold-item" id="cold-item2"></div>
           <div class="cold-item" id="cold-item3"></div>
@@ -283,34 +264,26 @@
           <div class="cold-item noDisplay" id="cold-item6"></div>
           <div class="cold-item noDisplay" id="cold-item7"></div>
           <div class="cold-item noDisplay" id="cold-item8"></div>
-          <div class="cold-item noDisplay" id="cold-item9"></div>
-          <div class="cold-item noDisplay" id="cold-item10"></div>
-      </div>
+          <div class="cold-item noDisplay noDisplylg" id="cold-item9"></div>
+          <div class="cold-item noDisplay noDisplylg" id="cold-item10"></div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
 
-<div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
-  <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
+    <!-- CRAZIES -->
+    <div class="col-12 col-md-12 col-xl-8 offset-xl-2 order-5 order-xl-5 order-lg-3 order-sm-3 order-md-3">
       <div class="text-center footer-below-crazy">
         <div class="crazies">
-          <div id="pickColumn" class="category-column">
-              <!-- Pick items will go here -->
-          </div>
-          <div id="crazyColumn" class="category-column">
-              <!-- Crazy items will go here -->
-          </div>
-          <div id="insaneColumn" class="category-column">
-              <!-- Insane items will go here -->
-          </div>
+          <div id="pickColumn" class="category-column"> <!-- Pick items will go here --> </div>
+          <div id="crazyColumn" class="category-column"> <!-- Crazy items will go here --> </div>
+          <div id="insaneColumn" class="category-column"> <!-- Insane items will go here --> </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- New Footer -->
 <footer class="container-fluid text-center new-footer">
@@ -346,13 +319,28 @@
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-function toggleTheme() {
-  document.body.classList.toggle('night-mode');
-  document.body.classList.toggle('day-mode');
-}
+  function toggleTheme() {
+    var element = document.body;
+    var isChecked = document.getElementById('checkbox').checked;
+    
+    if (isChecked) {
+      element.classList.add('day-mode');
+      element.classList.remove('night-mode');
+    } else {
+      element.classList.add('night-mode');
+      element.classList.remove('day-mode');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var checkbox = document.getElementById('checkbox');
+    var isNightMode = (localStorage.getItem('theme') === 'night'); // Example: Use local storage to remember the theme
+    checkbox.checked = isNightMode;
+    toggleTheme(); // Set the initial theme based on the checkbox state
+  });
 </script>
 <!-- Link to external JavaScript file -->
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
