@@ -24,6 +24,8 @@ def fetch_data():
         crsr.execute("SELECT * FROM act_numbers")
         records = crsr.fetchall()
         
+
+        
         # Fetch column names
         columns = [col[0] for col in crsr.description]
 
@@ -47,6 +49,8 @@ def fetch_act():
         records = crsr.fetchall()
         
         columns = [col[0] for col in crsr.description]
+        
+        
         results = [dict(zip(columns, row)) for row in records]
         
         crsr.close()
@@ -148,10 +152,6 @@ def proxy():
     
     if request.method == 'POST':
         data = request.get_json()
-        # app.logger.info('Received data: %s', data)
-        # if not data or 'jurisdiction' not in data or 'numOfGames' not in data:
-        #     app.logger.error('Invalid data received')
-        #     return jsonify({'error': 'Invalid data'}), 400
         jurisdiction = data.get('jurisdiction')
         numOfGames = int(data.get('numOfGames'), 0)
         
@@ -173,6 +173,8 @@ def proxy():
                 records = crsr.fetchall()
                 crsr.close()
                 conn.close()
+                
+                #sorted_records = sorted(records, key=lambda x: x[0], reverse=False)
                 
                 return process_records(data, records)
 
@@ -257,10 +259,21 @@ def strats():
                 crsr.close()
                 conn.close()
 
+
+
 def process_records(data, records):        
     
+    first_record = records[0]  
+    seven_spot = first_record[4]
+    eight_spot = first_record[5]
+    nine_spot = first_record[6]
+    ten_spot = first_record[7]
+    game_num = first_record[1]
+    
+    
     for record in records:
-        id, current_game_number, draw, closing = record
+        id, current_game_num, draw, closing, seve_spot, eigh_spot, nin_spot, te_spot = record
+
 
     draws, game_numbers, current_game_number, count_values, indices, hot_numbers, cold_numbers = game_data.returnData(records)
     
@@ -275,20 +288,19 @@ def process_records(data, records):
     utc_now_on_arbitrary_date_naive = utc_now_on_arbitrary_date.replace(tzinfo=None)
     difference_in_seconds = int((closing_on_arbitrary_date - utc_now_on_arbitrary_date_naive).total_seconds())
     
-    # send_telegram_message(difference_in_seconds)
     
     if difference_in_seconds < 0:
         sendError = "error"
         difference_in_seconds = 120
     else:
         sendError = ""
-
+        
     
     responseData = {
         "originalData": data,
         "processedData": {
             "draws": draws,
-            "game_numbers": game_numbers,
+            "game_numbers": game_num,
             "current_game_number": current_game_number,
             "count_values": count_values,
             "indices": indices,
@@ -297,7 +309,12 @@ def process_records(data, records):
             "numbers_array": numbers_arrays,
             "closing": closing,
             "difference_in_seconds": difference_in_seconds + 5,
-            "sendError": sendError
+            "sendError": sendError,
+            "seven_spot": seven_spot,
+            "eight_spot": eight_spot,
+            "nine_spot": nine_spot,
+            "ten_spot": ten_spot
+            
         }
     }
 

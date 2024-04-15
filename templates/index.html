@@ -12,10 +12,10 @@
 </head>
 
 <body class="night-mode">
-
+<!-- NAVBAR-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand noDisplay" href="#">
         <img src="../static/images/kb-logo.png" alt="Logo" style="height: 60px;">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,13 +49,11 @@
     </div>
   </nav>
   
-
 <div class="container-fluid mt-5" style="padding-top: 80px; padding-left: 0px; padding-right: 0px;">
   <div class="row d-flex flex-column flex-md-row">
     
-
     <!-- Main Content -->
-    <div class="col-12 col-sm-12 col-md-12 col-xl-8 order-2 order-xl-2 order-lg-2 order-sm-1 order-md-1">
+    <div class="col-12 col-sm-12 col-md-12 col-xl-12 col-xxl-8   order-1 order-sm-1 order-md-1 order-lg-1 order-xl-1 order-xxl-2">
         
         <div class="section info noDisplay">
           <h4 id="gameState">Results</h4>
@@ -91,18 +89,33 @@
           </div>
        
 
-        <div class="section middle-top">
-          <div class="cards-container">
-            <div class="card" id="card-1">Card</div>
-            <div class="card" id="card-2">Card</div>
-            <div class="card" id="card-3">Card</div>
-            <div class="card" id="card-4">Card</div>
-          </div>
+          <div class="section middle-top">
+            <div class="cards-container">
+                <div class="card-wrapper">
+                    <p class="card-title">10 Spot</p>
+                    <div class="card" id="card-10-spot">10 Spot</div>
+                </div>
+                <div class="card-wrapper">
+                    <p class="card-title">9 Spot</p>
+                    <div class="card" id="card-9-spot">9 Spot</div>
+                </div>
+                <div class="card-wrapper">
+                    <p class="card-title">8 Spot</p>
+                    <div class="card" id="card-8-spot">8 Spot</div>
+                </div>
+                <div class="card-wrapper">
+                    <p class="card-title">7 Spot</p>
+                    <div class="card" id="card-7-spot">7 Spot</div>
+                </div>
+            </div>
         </div>
+
+
+
       <div class="section caption">
           <div class="caption" id="caption">My Keno Buddy</div>
       </div>
-      <div class="section middle-main">
+      <div class="middle-main">
         <div class="board">
             <div class="board-grid">
                 <div class="cell top-number" id="cell-1">1</div>
@@ -217,20 +230,37 @@
       </div>
     </div>
 
+
     <!-- LEFT COL -->
-    <div class="col-12 col-md-12 col-xl-2 order-1 order-xl-1 order-lg-4 order-sm-4 order-md-4">
-      <div class="well section">
-        <p>ADS</p>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-2   order-4 order-sm-4 order-md-4 order-lg-4 order-xl-4 order-xxl-1">
+      <div class=" section">
+        <details class="collapsible">
+          <summary class="collapsible-summary">KenoBuddyBot</summary>
+          <div class="flex-container" >
+            <div class="flex-item" style="border: none;">
+              <p style="margin-bottom: 20px; text-align-last: center;">Play KenoBuddyBot on Telegram right now!, Press button below</p>
+              <img src="../static/images/kb_bot.png" alt="KenoBuddyBot robot" style="max-width: 100%; max-height: 100px;">
+              <a href="https://t.me/kenobuddybot" class="btn btn-info" style="margin-top: 20px;">KenoBuddyBot</a>
+              <p style="margin-top: 20px;">Free $5.00 sign up bonus</p>
+            </div>
+          </div>
+        </details>
       </div>
-      <div class="well section">
-        <p>ADS</p>
+      <div class="section">
+        <details class="collapsible">
+          <summary class="collapsible-summary">More Statistics</summary>
+          <div class="flex-container">  
+            <div class="flex-item" style="border: none;" id="mainContainer"></div>
+          </div>
+        </details>
       </div>
     </div>
 
+
     <!-- Right Column -->
-    <div class="col-12 col-md-12 col-xl-2 order-3 order-xl-3 order-lg-5 order-sm-5 order-md-5">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-2   order-5 order-sm-5 order-md-5 order-lg-5 order-xl-5 order-xxl-3 ">
       <div class="well section">
-        <p>ADS</p>
+        <p>ADS - RIGHT</p>
       </div>
       <div class="well section">
         <p>ADS</p>
@@ -239,7 +269,7 @@
 
 
     <!-- HOT and COLD -->
-    <div class="col-12 col-md-12 col-xl-8 offset-xl-2 order-4 order-xl-4 order-lg-2 order-sm-2 order-md-2">
+    <div class="col-12 col-sm-12 col-md-12 col-xl-12 col-xxl-8 offset-xxl-2   order-2 order-sm-2 order-md-2 order-lg-2 order-xl-2 order-xxl-4">
       <div class="text-center footer-hot-cold">
         <div class="hot">
           <!-- Hot items listed here -->
@@ -272,7 +302,7 @@
 
 
     <!-- CRAZIES -->
-    <div class="col-12 col-md-12 col-xl-8 offset-xl-2 order-5 order-xl-5 order-lg-3 order-sm-3 order-md-3">
+    <div class="col-12 col-sm-12 col-md-12 col-xl-12 col-xxl-8 offset-xxl-2   order-3 order-sm-3  order-md-3 order-lg-3 order-xl-3 order-xxl-5">
       <div class="text-center footer-below-crazy">
         <div class="crazies">
           <div id="pickColumn" class="category-column"> <!-- Pick items will go here --> </div>
@@ -288,29 +318,27 @@
 <!-- New Footer -->
 <footer class="container-fluid text-center new-footer">
     <div class="row row-flex">
-        <div class="col-sm-3">
+        <div class="col-3 col-sm-3">
         <p><a href="https://docs.kenobuddy.com.au/" class="footer-link">Docs</a></p>
         </div>
-        <div class="col-sm-3">
+        <div class="col-3 col-sm-3">
         <p><a href="https://docs.kenobuddy.com.au/docs/intro" class="footer-link">Tutorial</a></p>
         </div>
-        <div class="col-sm-3">
+        <div class="col-3 col-sm-3">
         <p><a href="https://docs.kenobuddy.com.au/blog" class="footer-link">Blog</a></p>
         </div>
-        <div class="col-sm-3">
+        <div class="col-3 col-sm-3">
         <p><a href="https://github.com/comfybear71" class="footer-link">GitHub</a></p>
         </div>
     </div>
 </footer>
 
 
-
-
-
 <!-- MESSAGE OVERLAY-->
 <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; color: white; font-size: 20px;">
     <div>Stand by, changing jurisdiction...</div>
 </div>
+
 <!-- Error MESSAGE OVERLAY -->
 <div id="errorOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; color: white; font-size: 20px;">
     <div style="text-align: center; width: 100%;">
@@ -337,12 +365,15 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     var checkbox = document.getElementById('checkbox');
-    var isNightMode = (localStorage.getItem('theme') === 'night'); // Example: Use local storage to remember the theme
+    var isNightMode = (localStorage.getItem('theme') === 'day-mode'); // Example: Use local storage to remember the theme
     checkbox.checked = isNightMode;
     toggleTheme(); // Set the initial theme based on the checkbox state
   });
 </script>
-<!-- Link to external JavaScript file -->
+
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </body>
 </html>

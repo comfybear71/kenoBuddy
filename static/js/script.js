@@ -7,7 +7,7 @@ let globalGameNumber = [];
 let globalCurrentGameNumber = [];
 let globalNumbers_array = []
 
-
+let jurisdictionAdded = false;
 
 addChangeListener('jurisdiction', onJurisdictionChange);
 addChangeListener('numOfGames', onNumOfGamesChange);
@@ -16,6 +16,8 @@ var clear = document.getElementById("clear");
 var draw = document.getElementById("draw");
 var previous = document.getElementById("previous");
 var plucker = document.getElementById("plucker");
+
+
 
 
 function addChangeListener(elementId, callback) {
@@ -62,13 +64,23 @@ function fetchDataAndUpdateDOM() {
             const numbers_array = Array.from({length: 80}, (_, index) => index + 1);
             
             const current_draw = processedData.draws[0];
-            const game_number = processedData.game_numbers[0]; //an array of number when they came out of the game
+            const game_number = processedData.game_numbers;//an array of number when they came out of the game
 
             const arrayLength = current_draw.length;
             const cold_numbers = processedData.cold_numbers;
             const indices = processedData.indices;
             const count_values = processedData.count_values;
             const difference_in_seconds = processedData.difference_in_seconds;
+
+            const seven_spot = Math.round(processedData.seven_spot);
+            const eight_spot = Math.round(processedData.eight_spot);
+            const nine_spot = Math.round(processedData.nine_spot);
+            const ten_spot = Math.round(processedData.ten_spot);
+
+            document.getElementById('card-7-spot').innerHTML = `$${seven_spot}`;
+            document.getElementById('card-8-spot').innerHTML = `$ ${eight_spot}`;
+            document.getElementById('card-9-spot').innerHTML = `$${nine_spot}`;
+            document.getElementById('card-10-spot').innerHTML = `$${ten_spot}`;
 
             //GLOBALS
             globalGameNumber = game_number;
@@ -100,7 +112,7 @@ function fetchDataAndUpdateDOM() {
                 }
             });
 
-            
+            onJurisdiction();
             updateDOMWithGameData(processedData, firstFiveElementsFromEach, count_values, current_draw, game_number); // Updates DOM with the game data
             manageCountdown(difference_in_seconds); // Manages the countdown and game stat
 
@@ -337,7 +349,7 @@ function revertStyles() {
             element.style.boxShadow = "0px 4px 8px rgba(0, 0, 0, 0.1)";
             element.style.opacity = "0.7";
             //text_element.style.color = "black";
-            bottom_text_element.style.color = "black";
+            //bottom_text_element.style.color = "black";
         }
     }
 }
@@ -540,8 +552,6 @@ function handleButtonClick(event) {
     .catch(error => console.error('Error fetching plucker:', error));
 };
 
-
-
 function crazy_numbers(current_game_number, indices, numbers_array) {
     let crazy_number_dict = {};
 
@@ -659,9 +669,173 @@ function appendItemsToColumn() {
     
 }
 
-// Call the function to append items
 appendItemsToColumn();
 
+
+function onJurisdiction() {
+    jurisdiction = document.getElementById('jurisdiction').value;
+
+    let route;
+    switch (jurisdiction) {
+        case 'ACT': route = '/act'; break;
+        case 'NSW': route = '/nsw'; break;
+        case 'QLD': route = '/qld'; break;
+        case 'SA': route = '/act'; break;
+        case 'TAS': route = '/act'; break;
+        case 'NT': route = '/act'; break;
+        case 'VIC': route = '/vic'; break; 
+        default: 
+            console.warn('Unhandled jurisdiction:', jurisdiction);
+    }
+
+    const mainContainer = document.getElementById('mainContainer');
+    mainContainer.innerHTML = '';
+
+    fetch(route)
+        .then(response => response.json())
+        .then(response => {
+
+        if (!response.data) {
+            console.error('Error: Missing data in response');
+            return;
+        }
+
+        let gamesToShow = response.data.slice(-2).reverse().slice(1);
+
+        gamesToShow.forEach(gameEntry => {
+            const categories = ['filtered', 'taps', 'picks', 'grabs', 'plucker'];
+
+            let gameContainer = document.createElement('div');
+            gameContainer.className = 'game-data-container';
+
+            categories.forEach(category => {
+                let hitsArray = parseToArray(gameEntry[`${category}_numbers`]);
+                let numbersArray = parseToArray(gameEntry[category]);
+                    
+                if (!jurisdictionAdded) {
+                    let heading = document.createElement('div');
+                    heading.className = 'jurisdiction-info';
+                    heading.textContent = `Jurisdiction: ${jurisdiction}`;
+                    mainContainer.appendChild(heading);
+                    jurisdictionAdded = true;
+                } 
+
+                let data = {
+                        gameNo: gameEntry.game_number,
+                        name: `${category.charAt(0).toUpperCase() + category.slice(1)} Data`,
+                        hits: hitsArray.join(", "),
+                        hitsCount: hitsArray.length,
+                        numbers: numbersArray.join(", "),
+                        possibleCombinations: gameEntry[`${category}_comb`],
+                    };
+
+                gameContainer.innerHTML += createCardContent(data);
+            });
+
+            jurisdictionAdded = false;
+            document.getElementById('mainContainer').appendChild(gameContainer);
+        });
+    });
+
+    const cardElement = document.createElement('div');
+    const element = document.getElementById('mainContainer');
+    
+    if (element) {
+        element.appendChild(cardElement);
+    } else {
+        console.error('An element was not found.');
+    }
+}
+
+function parseToArray(str) {
+    if (!str) { // Checks for null, undefined, and empty string
+    return []; // Returns an empty array if the input is null-like
+    }
+    try {
+    return JSON.parse(str);
+    } catch (e) {
+    return str.split(',');
+    }
+}
+
+function processGameEntry(gameEntry) {
+    // Define an array of data types you want to process
+    const dataTypes = ['filtered', 'taps', 'picks', 'grabs', 'plucker'];
+
+    const gameContainer = document.createElement('div');
+    gameContainer.className = 'game-data-container';
+
+    // Loop through each data type and create a card for it
+    dataTypes.forEach(dataType => {
+        let data = {
+            gameNo: gameEntry.game_number,
+            name: dataType.charAt(0).toUpperCase() + dataType.slice(1), // Capitalize the first letter
+            hits: parseToArray(gameEntry[dataType + '_numbers']).join(", "),
+            hitsCount: parseToArray(gameEntry[dataType + '_numbers']).length,
+            numbers: parseToArray(gameEntry[dataType]).join(", "),
+            possibleCombinations: gameEntry[dataType + '_comb'],
+        };
+        gameContainer.innerHTML += createCardContent(data);
+    });
+
+    document.getElementById('mainContainer').appendChild(gameContainer);
+}
+
+function createCardContent(data) {
+    
+    let numbersArray = data.numbers.split(", ");
+    let strikeRatePercent = Math.floor((data.hitsCount / numbersArray.length) * 100);
+
+    let greenBlocks = Math.ceil(data.hitsCount / 4);
+    let redBlocks = Math.ceil((25 - data.hitsCount) / 4);
+    let indicators = '🟩'.repeat(greenBlocks) + '🟥'.repeat(redBlocks);
+    let collapseId = "collapse" + data.name.replace(/\s+/g, '') + data.game_number;
+    
+
+    let imageTag = '';
+    if (data.hitsCount >= 10) {
+            imageTag = '<button class="btn btn-success btn-sm">Ten Spot</button>';
+        } else {
+            switch (data.hitsCount) {
+                case 6:
+                    imageTag = '<button class="btn btn-light btn-sm">Six Spot</button>';
+                    break;
+                case 7:
+                    imageTag = '<button class="btn btn-warning btn-sm">Seven Spot</button>';
+                    break;
+                case 8:
+                    imageTag = '<button class="btn btn-danger btn-sm">Eight Spot</button>';
+                    break;
+                case 9:
+                    imageTag = '<button class="btn btn-info btn-sm">Nine Spot</button>';
+                    break;
+            }
+        }
+
+
+    return `
+        <div class="specific-card" style="flex-grow: 1; flex-shrink: 1; flex-basis: 0; width: 100%; box-sizing: border-box;">
+            <div class="card-body" >
+                <h5 class="card-title"><h5>${data.name}</h5> Game No. ${data.gameNo}
+                <p class="card-text">
+                    Strike Rate: ${strikeRatePercent}% <br>
+                    ${indicators}
+                </p>
+                <button id="myCustomButton" class="btn btn-custom-dark btn-sm collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+                    More Info
+                </button>
+                ${imageTag}
+                <div class="collapse" id="${collapseId}" style="width: 100%;">
+                <div class="card card-body mt-1" style="font-size: 0.8rem; flex-grow: 1; flex-shrink: 1; flex-basis: 0; width: 100%; padding: 0.5rem;">
+                        Hits: ${data.hits} <br>
+                        Numbers: ${data.numbers} <br>
+                        Possible Combinations: ${data.possibleCombinations}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
 
 

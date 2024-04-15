@@ -36,6 +36,8 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
     border-radius: 5px;
     margin-bottom: 8px;
   }
+  
+
   .container-fluid > .row {
     display: flex;
     flex-wrap: wrap;
@@ -61,27 +63,52 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
     align-items: center;
     justify-content: center;
     width: 100px; 
-    padding: 10px; 
-    margin: 10px;
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 26px;
+    font-size: 22px;
     font-weight: bold;
     color: white;
   }
 
+  /* Example of original CSS for .card */
+  .cards-container > .card {
+    width: 150px; /* Example size */
+    padding: 10px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+
+  /* Updated CSS to account for the new structure */
+  .cards-container > .card-wrapper > .card {
+    width: 150px; /* Maintain original width */
+    background-color: #f0f0f0;
+    text-align: center;
+    height: 60px;
+  }
+
+  .card-wrapper {
+    text-align: center;  /* Aligns content of the wrapper */
+    margin: 5px;         /* Space around each card wrapper */
+  }
+
+  .card-title {
+      margin-bottom: 4px;  /* Space between title and card */
+      font-size: 16px;     /* Font size for readability */
+  }
+
 
   /* Day mode card colors */
-  body.day-mode .card#card-1 { background-color: #FFC107; }
-  body.day-mode .card#card-2 { background-color: #03A9F4; }
-  body.day-mode .card#card-3 { background-color: #4CAF50; }
-  body.day-mode .card#card-4 { background-color: #FF9800; }
+  body.day-mode .card#card-10-spot{ background-color: #FFC107; }
+  body.day-mode .card#card-9-spot { background-color: #03A9F4; }
+  body.day-mode .card#card-8-spot { background-color: #4CAF50; }
+  body.day-mode .card#card-7-spot { background-color: #FF9800; }
   /* Night mode card colors */
-  body.night-mode .card#card-1 { background-color: #FF5722; }
-  body.night-mode .card#card-2 { background-color: #673AB7; }
-  body.night-mode .card#card-3 { background-color: #3F51B5; }
-  body.night-mode .card#card-4 { background-color: #E91E63; }
+  body.night-mode .card#card-10-spot { background-color: #FF5722; }
+  body.night-mode .card#card-9-spot { background-color: #673AB7; }
+  body.night-mode .card#card-8-spot { background-color: #3F51B5; }
+  body.night-mode .card#card-7-spot { background-color: #E91E63; }
 
   .buttons-container {
       display: flex;
@@ -166,12 +193,23 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1em;
+      /* padding: 1em; */
       overflow: hidden; /* Prevents the children from overflowing */
       /* Ensure there's enough room for the grid */
       /*min-height: 500px;  Adjust this based on your content and layout */
       max-width: 100%; /* Ensure the middle-main doesn't exceed the width of its parent */
     }
+
+    .middle-top{
+      display: grid;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%; 
+      overflow: hidden;
+      flex: 1;
+      justify-items: stretch;
+    }
+
     
     .board {
       max-width: 100%;
@@ -289,25 +327,24 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
 
 
 
-.pick-item,
-.crazy-item,
-.insane-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 26px;
-    color: white;
-    font-weight: bold;
-    justify-content: center;
-    padding: 5px;
-    border-radius: 5px;
-    border: 2px solid white;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
-    margin-bottom: 10px;
-    width: 80%; /* Adjust this percentage as needed */
-    margin: 0 auto;
-    margin-bottom: 20px;
-  }
+
+
+.pick-item, .crazy-item, .insane-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 22px;
+  color: white;
+  font-weight: bold;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 1px;
+  border: 2px solid white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  width: 95%;
+  margin: 0 auto;
+  margin-bottom: 4px;
+}
 
     .pick-item {
         background-color: green;
@@ -549,92 +586,161 @@ input:checked + .slider:before {
 
 
 
+/* Night/Day Mode Styles (Assuming you have these defined) */
+body.day-mode .collapsible {
+  background-color: inherit; /* Inherit background color from body */
+  /*border: 1px solid #ddd;  Light border for day mode */
+  color: #000; /* Text color for day mode */
+}
+
+body.day-mode .collapsible summary {
+  color: inherit; /* Inherit text color from body */
+}
+
+body.night-mode .collapsible {
+  background-color: inherit; /* Inherit background color from body */
+  /*border: 1px solid #333;  Dark border for night mode */
+  color: #ddd; /* Text color for night mode */
+}
+
+body.night-mode .collapsible summary {
+  color: inherit; /* Inherit text color from body */
+}
+
+/* Button Styles */
+.btn-custom-dark {
+  background-color: #000; /* Black background color */
+  color: #fff; /* White text color */
+  border-color: #000; /* Black border color */
+}
+
+/* Collapsed State (Optional) */
+.btn-custom-dark.collapsed {
+  opacity: 0.9;
+}
+
+/* Styles for details element (collapsible content) */
+.collapsible {
+  padding: 0px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.collapsible summary {
+  font-weight: bold;
+}
+
+.collapsible:not([open]) .flex-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+/* Styles for flex container and flex item */
+.flex-container {
+  display: flex; /* Enable flexbox layout for horizontal arrangement */
+}
+
+.flex-item {
+  flex: 1; /* Make the flex item expand to fill the remaining space */
+  padding: 0px;
+  margin: 0px;
+  border: 1px solid #ccc; /* Assuming default border color */
+  border-radius: 5px;
+  text-align: center;
+  display: flex; /* Enable flexbox for the element */
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center elements horizontally */
+}
+
+#myCustomButton.btn-custom-dark {
+  background-color: #000; /* Black background color */
+  color: #fff; /* White text color */
+  border-color: #000; /* Black border color */
+}
+
+.collapse {
+  display: flex;
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@media (min-width: 370px) and (max-width: 450px) {
-  .bottom-number {
-    display: none !important; 
-  }
-  .card {
-    height: 40px;
-    font-size: 12px;
-    font-weight: bold;
-    color: white;
-  }
-  .navbar-brand img {
-    height: 40px; /* Adjust the logo height as needed */
-  }
-
-  .cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1em;
-    padding: 0;
-    height: 28px;
-    width: 30px;
-    margin-bottom: 0;
-  }
-  .hot-item, .cold-item {
-    border-radius: 1px;
-    text-align: center;
-    height: 30px;
-    width: 50px;
-    margin: 3px;
-    align-items: center;
-    font-size: 14px;
-    line-height: 24px;
-    color: white;
-    font-weight: bold;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-    display: inline-block;
-  }
-
-  .hot-item.noDisplay, .cold-item.noDisplay{
-    display: none !important;
-  }
-
-  .pick-item, .crazy-item, .insane-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 12px;
-    color: white;
-    font-weight: bold;
-    justify-content: center;
-    padding: 2px;
-    border-radius: 1px;
-    border: 2px solid white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    width: 90%;
-    margin: 0 auto;
-    margin-bottom: 4px;
-  }
+/* Your custom styles */
+.my-specific-card .card-body {
+  padding: 0.1rem !important;  /* Set padding to 0.5rem */
 }
 
 
 
-/* // X-Small devices (portrait phones, less than 576px)*/
-@media (min-width: 575.98px) and (max-width: 767px){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 575px) {
+  .container-fluid.mt-5 {
+    padding-top: 30px !important;
+  }
+  .navbar-nav .nav-item .label-text {
+    font-size: 12px;
+  }
+  .navbar-nav .nav-item .theme-switch {
+      transform: scale(0.8);
+  }
+  .navbar-nav .nav-item {
+      padding: 5px;
+  }
+  .info h4 {
+    font-size: 14px;
+    margin-bottom: 5px;
+    line-height: 1.2;
+  }
+  .controls .form-label {
+    font-size: 14px;
+  }
+  .controls .form-control, .controls .form-select {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .controls .dropdown-container {
+    margin-bottom: 10px;
+  }
+
+
+  .card {
+    font-size: 11px;  /* smaller font size for small screens */
+  }
+  .cards-container > .card {
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+  .cards-container > .card-wrapper > .card {
+    width: 70px;
+    background-color: #f0f0f0;
+    text-align: center;
+    height: 40px;
+  }
+  .card-wrapper {
+    text-align: center; 
+  }
+  .card-title {
+      margin-bottom: 0px;
+      font-size: 10px;
+  }
+
+
+
+
   .hot-item.noDisplylg, .cold-item.noDisplylg{
     display: none !important;
   }
@@ -643,6 +749,108 @@ input:checked + .slider:before {
   }
   .bottom-number {
     display: none !important; 
+  }
+  
+  .navbar-brand img {
+    height: 30px !important;
+  }
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    padding: 0;
+    height: 28px;
+    flex: 1; /* Allows the cell to grow and fill the space */
+    margin: 1; /* No margin for the cell */
+    border: 1px solid transparent; /* Adjust border as needed */
+    box-sizing: border-box;
+  }
+  .pick-item, .crazy-item, .insane-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 1px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 4px;
+  }
+  .crazies {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(50px, 1fr)); /* Adjust 150px as needed */
+    justify-items: stretch;
+    margin-top: 10px;
+}
+  .cold-item,
+  .hot-item {
+      border-radius: 5px;
+      text-align: center;
+      height: 30px;
+      width: 50px;
+      margin: 5px;
+      align-items: center;
+      font-size: 16px;
+      line-height: 25px;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      border: 2px solid white;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+  }
+  .footer-link {
+    font-size: 12px;
+    padding: 5px;
+    display: block;
+  }
+  .new-footer .col-3 {
+      padding: 0 2px;
+  }
+}
+
+/* // X-Small devices (portrait phones, less than 576px)*/
+@media (min-width: 576px) and (max-width: 767px){
+  .hot-item.noDisplylg, .cold-item.noDisplylg{
+    display: none !important;
+  }
+  .hot-item.noDisplay, .cold-item.noDisplay{
+    display: none !important;
+  }
+  .bottom-number {
+    display: none !important; 
+  }
+  .card {
+    font-size: 20px;  /* smaller font size for small screens */
+  }
+  .cards-container > .card {
+    width: 100px; /* Example size */
+    padding: 10px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+
+  /* Updated CSS to account for the new structure */
+  .cards-container > .card-wrapper > .card {
+    width: 100px; /* Maintain original width */
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+
+  .card-wrapper {
+    text-align: center;  /* Aligns content of the wrapper */
+    margin: 5px;         /* Space around each card wrapper */
+  }
+
+  .card-title {
+      margin-bottom: 4px;  /* Space between title and card */
+      font-size: 16px;     /* Font size for readability */
   }
   .cell {
     display: flex;
@@ -656,11 +864,23 @@ input:checked + .slider:before {
     border: 1px solid transparent; /* Adjust border as needed */
     box-sizing: border-box;
   }
+  .pick-item, .crazy-item, .insane-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 1px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 4px;
+  }
 }
-
-
-
-
 
 /* // Small devices (landscape phones, less than 768px) */
 @media (min-width: 768px) and (max-width: 991.97px) {   
@@ -681,6 +901,22 @@ input:checked + .slider:before {
     margin: 2; /* No margin for the cell */
     border: 1px solid transparent; /* Adjust border as needed */
     box-sizing: border-box;
+  }
+  .pick-item, .crazy-item, .insane-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 22px;
+    color: white;
+    font-weight: bold;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 1px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 4px;
   }
 }
 

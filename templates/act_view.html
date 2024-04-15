@@ -148,19 +148,19 @@
                         // Add more cases if needed
                     }
                 }
-        
-            return `
-                <div class="card card-margin bg-secondary text-white"">
+    
+                return `
+                <div class="card card-margin bg-secondary text-white specific-card">
                     <div class="card-body">
                         <h5 class="card-title">${data.name} for Game No. ${data.gameNo}</h5>
                         <p class="card-text">
                             Strike Rate: ${strikeRatePercent}% <br>
                             ${indicators}
                         </p>
-                        <button class="btn btn-custom-dark btn-sm" type="button" data-toggle="collapse" data-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+                        <button class="btn btn-custom-dark btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
                             More Info
                         </button>
-                        ${imageTag} <!-- This is where the image gets inserted based on data.hits -->
+                        ${imageTag}
                         <div class="collapse" id="${collapseId}">
                             <div class="card card-body mt-2">
                                 Hits: ${data.hits} <br>

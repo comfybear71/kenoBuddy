@@ -23,13 +23,20 @@ async def insert_into_db(data):
     draw = data.get('current', {}).get('draw')
     closing = data.get('selling', {}).get('closing')
     
+    jackpots = data.get('selling', {}).get('jackpots')
+    base_seven_spot = jackpots['seven-spot']['base']
+    base_eight_spot = jackpots['eight-spot']['base']
+    base_nine_spot = jackpots['nine-spot']['base']
+    base_ten_spot = jackpots['ten-spot']['base']
+    
+    
     if draw is not None:
         draw_json = json.dumps(list(draw))
     else:
         await asyncio.sleep(1800)
         send_telegram_message('ACT - WTFXXXXXX')
         
-    
+
     
     crsr.execute("SELECT COUNT(*) FROM act_draws")
     count = crsr.fetchone()[0]
@@ -42,7 +49,7 @@ async def insert_into_db(data):
     
     if not crsr.fetchone():
         try:
-            crsr.execute("INSERT INTO act_draws(current_game_number, draw, closing) VALUES (%s, %s, %s)", (current_game_number, draw_json, closing,))
+            crsr.execute("INSERT INTO act_draws(current_game_number, draw, closing, 7_spot, 8_spot, 9_spot, 10_spot) VALUES (%s, %s, %s, %s, %s, %s, %s)", (current_game_number, draw_json, closing, base_seven_spot, base_eight_spot, base_nine_spot, base_ten_spot,))
             conn.commit()
             print("Record inserted successfully.")
             record_inserted = True 
