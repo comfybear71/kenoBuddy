@@ -2,8 +2,11 @@ body, html {
     margin: 0;
     transition: background-color 0.5s ease;
   }
+
+
+
   body.day-mode {
-    background-color: #fff;
+    background: linear-gradient(to left, #ddd9d9, #6e6e6e); /* Adjust the direction and colors as needed */
     color: #000;
   }
   body.day-mode .navbar, body.day-mode .section, body.day-mode .card, 
@@ -14,7 +17,7 @@ body, html {
     margin-bottom: 8px;
   }
   body.night-mode {
-    background-color: #333;
+    background: linear-gradient(to left, #8b8b8b, #111111); /* Adjust the direction and colors as needed */
     color: #ddd;
   }
 
@@ -44,58 +47,69 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
     max-width: 1600px;
     margin: 0 auto;
   }
+
+  .container .col-12 {
+    overflow: hidden; /* Adjust as necessary */
+  }
+
+
   .section {
     padding: 5px;
   }
+
   
-  /* Ensure this is outside the media query to have a default styling */
+
+
+
+
+
+
+  
+  .section.middle-top {
+      width: 100%; /* Ensure full-width or set specific max-width as needed */
+      box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+      overflow: hidden; /* Hide overflow, or set to 'auto' to enable scrolling within this container */
+  }
+
+  details.collapsible {
+      width: 99%; /* Ensure the <details> element does not exceed its container */
+  }
+
   .cards-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    align-items: center;
-    height: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-wrap: nowrap; /* Prevent wrapping of items to ensure horizontal scrolling */
+      overflow-x: hidden; /* Enable horizontal scrolling */
+      overflow-y: hidden; /* Prevent vertical scrolling */
+      width: 100%; /* Control width to prevent spilling out */
   }
   
   .card {
-    flex: 0 0 calc(25% - 20px); 
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px; 
-    text-align: center;
+    height: 70px; /* Adjust based on content */
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 22px;
-    font-weight: bold;
+    background-color: #333; /* Ensure text is readable */
     color: white;
-  }
+}
 
-  /* Example of original CSS for .card */
-  .cards-container > .card {
-    width: 150px; /* Example size */
-    padding: 10px;
-    margin: 5px;
-    background-color: #f0f0f0;
-    text-align: center;
-  }
-
-  /* Updated CSS to account for the new structure */
-  .cards-container > .card-wrapper > .card {
-    width: 150px; /* Maintain original width */
-    background-color: #f0f0f0;
-    text-align: center;
-    height: 60px;
-  }
 
   .card-wrapper {
-    text-align: center;  /* Aligns content of the wrapper */
-    margin: 5px;         /* Space around each card wrapper */
+    flex: 0 0 auto; /* Don’t grow or shrink but use auto width based on content */
+    margin: 5px; /* Adjust spacing around cards */
+    width: 200px; /* Minimum width of each card */
+    position: relative;
   }
 
-  .card-title {
-      margin-bottom: 4px;  /* Space between title and card */
-      font-size: 16px;     /* Font size for readability */
+  .badge.card-title {
+      position: absolute; /* Position the badge absolutely within the wrapper */
+      top: 5px; /* Adjust top padding as needed */
+      left: 5px; /* Adjust left padding as needed */
+      z-index: 100;
+      border-radius: 15px;
   }
 
 
@@ -451,10 +465,10 @@ body.night-mode .navbar-inverse .navbar-right > li > a {
       margin: 5px;
       align-items: center;
       font-size: 26px;
-      line-height: 40px;
+      line-height: 32px;
       color: white;
       font-weight: bold;
-      border-radius: 5px;
+      border-radius: 1px;
       border: 2px solid white;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
   }
@@ -643,7 +657,7 @@ body.night-mode .collapsible summary {
 
 .flex-item {
   flex: 1; /* Make the flex item expand to fill the remaining space */
-  padding: 0px;
+  padding: 5px;
   margin: 0px;
   border: 1px solid #ccc; /* Assuming default border color */
   border-radius: 5px;
@@ -663,12 +677,13 @@ body.night-mode .collapsible summary {
   display: flex;
 }
 
+.collapse-stats{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
 
-/* Your custom styles */
-.my-specific-card .card-body {
-  padding: 0.1rem !important;  /* Set padding to 0.5rem */
 }
-
 
 
 
@@ -716,31 +731,6 @@ body.night-mode .collapsible summary {
     margin-bottom: 10px;
   }
 
-
-  .card {
-    font-size: 11px;  /* smaller font size for small screens */
-  }
-  .cards-container > .card {
-    background-color: #f0f0f0;
-    text-align: center;
-  }
-  .cards-container > .card-wrapper > .card {
-    width: 70px;
-    background-color: #f0f0f0;
-    text-align: center;
-    height: 40px;
-  }
-  .card-wrapper {
-    text-align: center; 
-  }
-  .card-title {
-      margin-bottom: 0px;
-      font-size: 10px;
-  }
-
-
-
-
   .hot-item.noDisplylg, .cold-item.noDisplylg{
     display: none !important;
   }
@@ -752,7 +742,7 @@ body.night-mode .collapsible summary {
   }
   
   .navbar-brand img {
-    height: 30px !important;
+    height: 40px !important;
   }
   .cell {
     display: flex;
@@ -800,7 +790,7 @@ body.night-mode .collapsible summary {
       line-height: 25px;
       color: white;
       font-weight: bold;
-      border-radius: 5px;
+      border-radius: 1px;
       border: 2px solid white;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
   }
@@ -812,6 +802,26 @@ body.night-mode .collapsible summary {
   .new-footer .col-3 {
       padding: 0 2px;
   }
+  .section.middle-top {
+    width: 100%; /* Ensure full-width or set specific max-width as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    overflow: hidden; /* Hide overflow, or set to 'auto' to enable scrolling within this container */
+  }
+
+  details.collapsible {
+      width: 40%; /* Ensure the <details> element does not exceed its container */
+  }
+
+  .cards-container {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-wrap: nowrap; /* Prevent wrapping of items to ensure horizontal scrolling */
+      overflow-x: hidden; /* Enable horizontal scrolling */
+      overflow-y: hidden; /* Prevent vertical scrolling */
+      width: 100%; /* Control width to prevent spilling out */
+  }
+
 }
 
 /* // X-Small devices (portrait phones, less than 576px)*/
@@ -918,6 +928,7 @@ body.night-mode .collapsible summary {
     margin: 0 auto;
     margin-bottom: 4px;
   }
+
 }
 
 @media (min-width: 992px) and (max-width: 1599.98px) {   
@@ -938,7 +949,6 @@ body.night-mode .collapsible summary {
     margin: 2; /* No margin for the cell */
     border: 1px solid transparent; /* Adjust border as needed */
     box-sizing: border-box;
-
   }
 }
 

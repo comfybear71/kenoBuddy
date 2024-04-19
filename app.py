@@ -155,6 +155,8 @@ def proxy():
         jurisdiction = data.get('jurisdiction')
         numOfGames = int(data.get('numOfGames'), 0)
         
+        #print(jurisdiction, numOfGames)
+        
         if conn:
         
             table_name = ""

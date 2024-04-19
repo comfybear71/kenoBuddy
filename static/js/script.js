@@ -34,6 +34,8 @@ const appState = {
     }
 };
 
+//jurisdiction = document.getElementById('jurisdiction').value;
+//numOfGames document.getElementById('numOfGames').value;
 
 function fetchDataAndUpdateDOM() {
     if (isFetching) return;
@@ -72,15 +74,24 @@ function fetchDataAndUpdateDOM() {
             const count_values = processedData.count_values;
             const difference_in_seconds = processedData.difference_in_seconds;
 
-            const seven_spot = Math.round(processedData.seven_spot);
-            const eight_spot = Math.round(processedData.eight_spot);
-            const nine_spot = Math.round(processedData.nine_spot);
-            const ten_spot = Math.round(processedData.ten_spot);
+            const seven_spot = (processedData.seven_spot);
+            const eight_spot = (processedData.eight_spot);
+            const nine_spot = (processedData.nine_spot);
+            const ten_spot = (processedData.ten_spot);
 
-            document.getElementById('card-7-spot').innerHTML = `$${seven_spot}`;
-            document.getElementById('card-8-spot').innerHTML = `$ ${eight_spot}`;
-            document.getElementById('card-9-spot').innerHTML = `$${nine_spot}`;
-            document.getElementById('card-10-spot').innerHTML = `$${ten_spot}`;
+            const formatNumber = (number) => {
+                return new Intl.NumberFormat('en-AU', {
+                    style: 'decimal',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                    useGrouping: true
+                }).format(number);
+            };
+            
+            document.getElementById('card-7-spot').innerHTML = `$${formatNumber(seven_spot)}`;
+            document.getElementById('card-8-spot').innerHTML = `$${formatNumber(eight_spot)}`;
+            document.getElementById('card-9-spot').innerHTML = `$${formatNumber(nine_spot)}`;
+            document.getElementById('card-10-spot').innerHTML = `$${formatNumber(ten_spot)}`;
 
             //GLOBALS
             globalGameNumber = game_number;
@@ -784,7 +795,7 @@ function processGameEntry(gameEntry) {
 function createCardContent(data) {
     
     let numbersArray = data.numbers.split(", ");
-    let strikeRatePercent = Math.floor((data.hitsCount / numbersArray.length) * 100);
+    let strikeRatePercent = Math.floor((data.hitsCount / 20) * 100);
 
     let greenBlocks = Math.ceil(data.hitsCount / 4);
     let redBlocks = Math.ceil((25 - data.hitsCount) / 4);
@@ -813,6 +824,27 @@ function createCardContent(data) {
         }
 
 
+    // Assuming data.numbers is a comma-separated string of numbers, and data.hits is an array of numbers.
+    const numbsArray = data.numbers.split(',').map(num => num.trim());
+    const hitsArray = data.hits.split(',').map(hit => parseInt(hit.trim()));
+
+    const styledNumbers = numbsArray.map(number => {
+        const trimmedNumber = number.trim();
+        const numberInt = parseInt(trimmedNumber);
+
+        console.log('Checking Number:', numberInt); // Debugging each number
+
+        if (hitsArray.includes(numberInt)) {
+            console.log('Hit found:', trimmedNumber); 
+
+            return `<b><span style="color: yellow;">${trimmedNumber}</span></b>`;
+        } else {
+
+            return trimmedNumber;
+        }
+    }).join(', '); 
+
+    // Return the template literal with styled numbers
     return `
         <div class="specific-card" style="flex-grow: 1; flex-shrink: 1; flex-basis: 0; width: 100%; box-sizing: border-box;">
             <div class="card-body" >
@@ -826,15 +858,16 @@ function createCardContent(data) {
                 </button>
                 ${imageTag}
                 <div class="collapse" id="${collapseId}" style="width: 100%;">
-                <div class="card card-body mt-1" style="font-size: 0.8rem; flex-grow: 1; flex-shrink: 1; flex-basis: 0; width: 100%; padding: 0.5rem;">
+                <div class="card-moreinfo card-body mt-2" style="font-size: 0.8rem; flex-grow: 1; flex-shrink: 1; flex-basis: 0; width: 100%; padding: 0.5rem;">
                         Hits: ${data.hits} <br>
-                        Numbers: ${data.numbers} <br>
+                        Numbers: ${styledNumbers} <br>
                         Possible Combinations: ${data.possibleCombinations}
                     </div>
                 </div>
             </div>
         </div>
     `;
+   
 }
 
 
